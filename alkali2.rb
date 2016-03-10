@@ -41,14 +41,17 @@ end
 
 puts ""
 if res1.count == 0 then
-  puts "問題が間違っています。"
-  puts "正しくは、#{right(e, a)}です。"
+  puts "正答が間違っています。"
+  puts "正しくは、#{e}の#{a}は#{right(e, a)}です。"
 elsif res2.count >= 1 then
-  puts "問題が間違っています。"
+  puts "誤答1が間違っています。"
+  puts "#{e}の#{a}は#{right(e, a)}は正しいです。"
 elsif res3.count >= 1 then
-  puts "問題が間違っています。"
+  puts "誤答2が間違っています。"
+  puts "#{e}の#{a}は#{right(e, a)}は正しいです。"
 elsif res4.count >= 1 then
-  puts "問題が間違っています。"
+  puts "誤答3が間違っています。"
+  puts "#{e}の#{a}は#{right(e, a)}は正しいです。"
 else puts "良い問題ですね。" end
 
 @connect.finish
