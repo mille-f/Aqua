@@ -5,7 +5,4 @@ class HomeController < ApplicationController
   def about
     @msg = 'hogehoge'
   end
-  def list
-    #@lists = 
-  end
 end

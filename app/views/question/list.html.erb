@@ -1,0 +1,13 @@
+<table border='1'>
+  <tr>
+    <th>entity</th><th>attribute</th><th>value</th>
+  </tr>
+
+<% @data.each do |datum| %>
+  <tr>
+    <td><%= datum.ent %></td>
+    <td><%= datum.att %></td>
+    <td><%= datum.val %></td>
+  </tr>
+<% end %>
+</table>
