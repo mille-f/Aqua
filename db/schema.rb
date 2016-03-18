@@ -11,12 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20160318155230) do
 
-  create_table "test1", id: false, force: :cascade do |t|
-    t.text "entity",    limit: 65535
-    t.text "attribute", limit: 65535
-    t.text "value",     limit: 65535
+  create_table "alkalis", force: :cascade do |t|
+    t.string   "ent",        limit: 255
+    t.string   "att",        limit: 255
+    t.string   "val",        limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "testcases", force: :cascade do |t|
+    t.string   "entity",     limit: 255
+    t.string   "attribute",  limit: 255
+    t.string   "value",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
 end

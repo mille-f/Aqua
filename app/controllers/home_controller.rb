@@ -1,11 +1,11 @@
 class HomeController < ApplicationController
   def top
-    @msg = 'aqualium'
+    @msg = 'aquarium'
   end
   def about
     @msg = 'hogehoge'
   end
   def list
-    @lists = 
+    #@lists = 
   end
 end
