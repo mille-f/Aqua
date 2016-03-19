@@ -1,5 +1,5 @@
 class QuestionController < ApplicationController
-  def make
+  def create
   end
 
   def list

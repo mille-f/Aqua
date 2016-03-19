@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  get 'question/make'
+  get 'question/create'
   get 'question/list' => 'question#list'
 
   root 'home#top'
