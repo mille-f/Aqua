@@ -1,5 +1,6 @@
-<% if @res1.count == 0 %>
+<% if !@problem.blank? && @res1.count == 0 %>
   <div class="alert alert-danger" role="alert"><strong>danger</strong>：　問題文が間違っています。</div>
+  <div class="alert alert-warning" role="alert"><strong>warning</strong>：　正しくは。</div>
 <% end %>
 <h1>問題作成</h1>
 <%= form_tag question_create_path do %>
@@ -30,3 +31,4 @@
   <br>
   <input type="submit" value="作成" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
 <% end %>
+<p> <%= @res1 %> </p>
