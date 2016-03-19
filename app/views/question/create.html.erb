@@ -1,29 +1,32 @@
+<% if @res1.count == 0 %>
+  <div class="alert alert-danger" role="alert"><strong>danger</strong>：　問題文が間違っています。</div>
+<% end %>
 <h1>問題作成</h1>
-<%= form_tag do %>
+<%= form_tag question_create_path do %>
   <div class="mdl-textfield mdl-js-textfield" style="width:350px">
-    <input class="mdl-textfield__input" type="text" id="sentence">
-    <label class="mdl-textfield__label" for="sentence">問題文を入力してください（例:XのYは何ですか？）</label>
+    <input class="mdl-textfield__input" type="text" id="problem" name="problem" required>
+    <label class="mdl-textfield__label" for="problem">問題文を入力してください（例:XのYは何ですか？）</label>
   </div>
   <br>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="right">
+    <input class="mdl-textfield__input" type="text" id="right" name="right" required>
     <label class="mdl-textfield__label" for="right">正答</label>
   </div>
   <br>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="wrong1">
+    <input class="mdl-textfield__input" type="text" id="wrong1" name="wrong1" required>
     <label class="mdl-textfield__label" for="wrong1">誤答1</label>
   </div>
   <br>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="wrong2">
+    <input class="mdl-textfield__input" type="text" id="wrong2" name="wrong2" required>
     <label class="mdl-textfield__label" for="wrong2">誤答2</label>
   </div>
   <br>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="wrong3">
+    <input class="mdl-textfield__input" type="text" id="wrong3" name="wrong3" required>
     <label class="mdl-textfield__label" for="wrong3">誤答3</label>
   </div>
   <br>
   <input type="submit" value="作成" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-  <% end %>
+<% end %>
