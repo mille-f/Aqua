@@ -1,0 +1,28 @@
+<%= form_tag do %>
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="sentence">
+    <label class="mdl-textfield__label" for="sentence">問題文を入力してください（例:XのYは何ですか？）</label>
+  </div>
+  <br>
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="right">
+    <label class="mdl-textfield__label" for="right">正答</label>
+  </div>
+  <br>
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="wrong1">
+    <label class="mdl-textfield__label" for="wrong1">誤答1</label>
+  </div>
+  <br>
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="wrong2">
+    <label class="mdl-textfield__label" for="wrong2">誤答2</label>
+  </div>
+  <br>
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" id="wrong3">
+    <label class="mdl-textfield__label" for="wrong3">誤答3</label>
+  </div>
+  <br>
+  <input type="submit" value="作成" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+  <% end %>
