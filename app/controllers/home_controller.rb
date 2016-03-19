@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   def top
-    @msg = 'aquarium'
+    @msg = 'Active S-Quiz'
   end
   def about
     @msg = 'hogehoge'
