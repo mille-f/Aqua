@@ -1,34 +1,54 @@
-<% if !@problem.blank? && @res1.count == 0 %>
-  <div class="alert alert-danger" role="alert"><strong>danger</strong>：　問題文が間違っています。</div>
-  <div class="alert alert-warning" role="alert"><strong>warning</strong>：　正しくは。</div>
+<h2>問題作成</h2>
+<hr>
+<% if @ok %>
+  <div class="alert alert-success" role="alert"><strong>success</strong>：　良い問題ですね。</div>
 <% end %>
-<h1>問題作成</h1>
+
 <%= form_tag question_create_path do %>
+  <% if !@problem.blank? && !@check %>
+    <div class="alert alert-danger" role="alert"><strong>danger</strong>：　問題文が間違っています。</div>
+  <% end %>
+  <h5>問題文</h5>
   <div class="mdl-textfield mdl-js-textfield" style="width:350px">
-    <input class="mdl-textfield__input" type="text" id="problem" name="problem" required>
+    <input class="mdl-textfield__input" type="text" id="problem" name="problem" <% if !@ok %> value="<%= @problem %>" <% end %> required>
     <label class="mdl-textfield__label" for="problem">問題文を入力してください（例:XのYは何ですか？）</label>
   </div>
-  <br>
+  <% if !@problem.blank? && @res1.count == 0 && @check %>
+    <div class="alert alert-danger" role="alert"><strong>danger</strong>：　正答が間違っています。</div>
+    <div class="alert alert-warning" role="alert"><strong>warning</strong>：　正しくは <%= @e %> の <%= @a %> は <%= @ret1 %> です。</div>
+  <% end %>
+  <h5>正答</h5>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="right" name="right" required>
+    <input class="mdl-textfield__input" type="text" id="right" name="right" <% if !@ok %> value="<%= @v %>" <% end %> required>
     <label class="mdl-textfield__label" for="right">正答</label>
   </div>
-  <br>
+  <% if !@problem.blank? && @res2.count >= 1 %>
+    <div class="alert alert-danger" role="alert"><strong>danger</strong>：　誤答1が間違っています。</div>
+    <div class="alert alert-warning" role="alert"><strong>warning</strong>：　「<%= @e %> の <%= @a %> は <%= @ret2 %> 」は正しいです。</div>
+  <% end %>
+  <h5>誤答1</h5>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="wrong1" name="wrong1" required>
+    <input class="mdl-textfield__input" type="text" id="wrong1" name="wrong1" <% if !@ok %> value="<%= @w1 %>" <% end %> required>
     <label class="mdl-textfield__label" for="wrong1">誤答1</label>
   </div>
-  <br>
+  <% if !@problem.blank? && @res3.count >= 1 %>
+    <div class="alert alert-danger" role="alert"><strong>danger</strong>：　誤答2が間違っています。</div>
+    <div class="alert alert-warning" role="alert"><strong>warning</strong>：　「<%= @e %> の <%= @a %> は <%= @ret3 %> 」は正しいです。</div>
+  <% end %>
+  <h5>誤答2</h5>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="wrong2" name="wrong2" required>
+    <input class="mdl-textfield__input" type="text" id="wrong2" name="wrong2" <% if !@ok %> value="<%= @w2 %>" <% end %> required>
     <label class="mdl-textfield__label" for="wrong2">誤答2</label>
   </div>
-  <br>
+  <% if !@problem.blank? && @res4.count >= 1 %>
+    <div class="alert alert-danger" role="alert"><strong>danger</strong>：　誤答3が間違っています。</div>
+    <div class="alert alert-warning" role="alert"><strong>warning</strong>：　「<%= @e %> の <%= @a %> は <%= @ret4 %> 」は正しいです。</div>
+  <% end %>
+  <h5>誤答3</h5>
   <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" id="wrong3" name="wrong3" required>
+    <input class="mdl-textfield__input" type="text" id="wrong3" name="wrong3" <% if !@ok %> value="<%= @w3 %>" <% end %> required>
     <label class="mdl-textfield__label" for="wrong3">誤答3</label>
   </div>
   <br>
   <input type="submit" value="作成" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
 <% end %>
-<p> <%= @res1 %> </p>
