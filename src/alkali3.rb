@@ -1,8 +1,15 @@
 require 'pg'
 require 'natto'
+require 'levenshtein'
 
 @connect = PG::connect(dbname: 'test1')
 @natto = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
+
+module Enumerable
+  def ngram(n)
+    each_cons(n).to_a
+  end
+end
 
 def imput
   puts "問題を作成してください。(例:XのYは何ですか？)"
@@ -11,7 +18,7 @@ def imput
 
   noun = Array.new
   @natto.parse(txt) do |n|
-    if n.feature.split(',')[0] == '名詞' || n.feature.split(',')[0] == '動詞' then
+    if n.feature =~ /\A名詞,|動詞,/ then
       noun.push(n.surface)
     end
   end
@@ -41,47 +48,76 @@ def wrong(e, a, v)
   @connect.exec("select value from alkali where entity like '#{e}' AND attribute like '#{a}' AND value like '#{v}'")[0].to_h.fetch("value")
 end
 
+def message(msg)
+  case msg
+  when "r"
+    puts "正答が間違っています。"
+    puts "正しくは、#{@e}の#{@a}は#{right(@e, @a)}です。"
+  when "w1"
+    puts "誤答1が間違っています。"
+    puts "「#{@e}の#{@a}は#{wrong(@e, @a, @w1)}」は正しいです。"
+  when "w2"
+    puts "誤答2が間違っています。"
+    puts "「#{@e}の#{@a}は#{wrong(@e, @a, @w2)}」は正しいです。"
+  when "w3"
+    puts "誤答3が間違っています。"
+    puts "「#{@e}の#{@a}は#{wrong(@e, @a, @w3)}」は正しいです。"
+  end
+end
+
+def ld(w1, w2)
+  Levenshtein.normalized_distance(w1, w2)
+end
+
 imput
 while !check(@e, @a) do
   imput
 end
 
-print "正答=> "
-v = gets.chomp
-print "誤答1=> "
-w1 = gets.chomp
-print "誤答2=> "
-w2 = gets.chomp
-print "誤答3=> "
-w3 = gets.chomp
+print "正答 => "
+@v = gets.chomp
+print "誤答1 => "
+@w1 = gets.chomp
+print "誤答2 => "
+@w2 = gets.chomp
+print "誤答3 => "
+@w3 = gets.chomp
 
-res1 = search(@e, @a, v)
-res2 = search(@e, @a, w1)
-res3 = search(@e, @a, w2)
-res4 = search(@e, @a, w3)
+res1 = search(@e, @a, @v)
+res2 = search(@e, @a, @w1)
+res3 = search(@e, @a, @w2)
+res4 = search(@e, @a, @w3)
 
 puts ""
 
 flag = false
 if res1.count == 0 then
-    puts "正答が間違っています。"
-    puts "正しくは、#{@e}の#{@a}は#{right(@e, @a)}です。"
-    flag = true
+    if ld(@v, right(@e, @a)) <= 0.5 then
+      #if right(@e, @a).split(/\s*/).ngram(2).flatten.include?(v) then
+        puts "もしかして: #{right(@e, @a)} ですか？"
+        print "Yes!(y), No!(n) => "
+        c = gets.chomp
+        if c == "n" then
+          message("r")
+          flag = true
+        end
+      #end
+    else
+      message("r")
+      flag = true
+    end
 end
 if res2.count >= 1 then
-    puts "誤答1が間違っています。"
-    puts "「#{@e}の#{@a}は#{wrong(@e, @a, w1)}」は正しいです。"
-    flag = true
+  message("w1")
+  flag = true
 end
 if res3.count >= 1 then
-    puts "誤答2が間違っています。"
-    puts "「#{@e}の#{@a}は#{wrong(@e, @a, w2)}」は正しいです。"
-    flag = true
+  message("w2")
+  flag = true
 end
 if res4.count >= 1 then
-    puts "誤答3が間違っています。"
-    puts "「#{@e}の#{@a}は#{wrong(@e, @a, w3)}」は正しいです。"
-    flag = true
+  message("w3")
+  flag = true
 end
 
 if flag == false then puts "良い問題ですね。" end
