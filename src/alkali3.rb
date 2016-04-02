@@ -28,7 +28,21 @@ def imput
 end
 
 def check(e, a)
+  ents = @connect.exec("select entity from alkali")
+  atts = @connect.exec("select attribute from alkali")
   res = @connect.exec("select * from alkali where entity like '#{e}' AND attribute like '#{a}' AND value like '%'")
+
+  ents.each do |ent|
+    #if ld(@e, ent) <= 0.5 then
+      #puts ent
+    #end
+  end
+  atts.each do |att|
+    #if ld(@a, att) <= 0.5 then
+      #puts att
+    #end
+  end
+
   if res.to_a.empty? then
     puts "問題文が正しくありません。問題を作りなおしてください。"
     puts ""
@@ -49,6 +63,7 @@ def wrong(e, a, v)
 end
 
 def message(msg)
+  puts ""
   case msg
   when "r"
     puts "正答が間違っています。"
@@ -93,7 +108,7 @@ puts ""
 flag = false
 if res1.count == 0 then
     if ld(@v, right(@e, @a)) <= 0.5 then
-      #if right(@e, @a).split(/\s*/).ngram(2).flatten.include?(v) then
+      #if right(@e, @a).split(/\s*/).ngram(2).flatten.include?(@v) then
         puts "もしかして: #{right(@e, @a)} ですか？"
         print "Yes!(y), No!(n) => "
         c = gets.chomp
