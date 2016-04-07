@@ -11,7 +11,7 @@ module Enumerable
   end
 end
 
-def imput
+def input
   puts "問題を作成してください。(例:XのYは何ですか？)"
   print "=> "
   txt = gets.chomp
@@ -32,19 +32,43 @@ def check(e, a)
   atts = @connect.exec("select attribute from alkali")
   res = @connect.exec("select * from alkali where entity like '#{e}' AND attribute like '#{a}' AND value like '%'")
 
+  conf_e = Array.new()
+  conf_a = Array.new()
   ents.each do |ent|
-    #if ld(@e, ent) <= 0.5 then
-      #puts ent
-    #end
+    if ld(@e, ent.fetch("entity")) == 0 then
+      conf_e.clear
+      break
+    end
+    if (0.01..0.50).include?(ld(@e, ent.fetch("entity"))) then
+      conf_e.push(ent.fetch("entity"))
+    end
   end
   atts.each do |att|
-    #if ld(@a, att) <= 0.5 then
-      #puts att
-    #end
+    if ld(@a, att.fetch("attribute")) == 0 then
+      conf_a.clear
+      break
+    end
+    if (0.01..0.50).include?(ld(@a, att.fetch("attribute"))) then
+      conf_a.push(att.fetch("attribute"))
+    end
+  end
+  if !conf_e.empty? then
+    if conf_e.count >= 1 then conf_e.uniq! end
+    puts "もしかして、#{@e} は #{conf_e.join(" か ")} ですか？"
+    conf_e.each_with_index {|ce, i| print "[#{i+1}] #{ce} " }
+    print "[#{conf_e.count+1}] 該当なし"
+    puts ""
+  end
+  if !conf_a.empty? then
+    if conf_a.count > 1 then conf_a.uniq! end
+    puts "もしかして、#{@a} は #{conf_a.join(" か ")} ですか？"
+    conf_a.each_with_index {|ca, i| print "[#{i+1}] #{ca} " }
+    print "[#{conf_a.count+1}] 該当なし"
+    puts ""
   end
 
   if res.to_a.empty? then
-    puts "問題文が正しくありません。問題を作りなおしてください。"
+    puts "該当する文字がデータベースにありません。問題を作りなおしてください。"
     puts ""
     return false
   else return true end
@@ -84,9 +108,9 @@ def ld(w1, w2)
   Levenshtein.normalized_distance(w1, w2)
 end
 
-imput
+input
 while !check(@e, @a) do
-  imput
+  input
 end
 
 print "正答 => "
@@ -113,8 +137,9 @@ if res1.count == 0 then
         print "Yes!(y), No!(n) => "
         c = gets.chomp
         if c == "n" then
-          message("r")
-          flag = true
+          #message("r")
+          #flag = true
+          input
         end
       #end
     else
