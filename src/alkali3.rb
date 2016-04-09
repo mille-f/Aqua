@@ -30,7 +30,6 @@ end
 def check(e, a)
   ents = @connect.exec("select entity from alkali")
   atts = @connect.exec("select attribute from alkali")
-  res = @connect.exec("select * from alkali where entity like '#{e}' AND attribute like '#{a}' AND value like '%'")
 
   conf_e = Array.new()
   conf_a = Array.new()
@@ -55,23 +54,51 @@ def check(e, a)
   if !conf_e.empty? then
     if conf_e.count >= 1 then conf_e.uniq! end
     puts "もしかして、#{@e} は #{conf_e.join(" か ")} ですか？"
-    conf_e.each_with_index {|ce, i| print "[#{i+1}] #{ce} " }
-    print "[#{conf_e.count+1}] 該当なし"
-    puts ""
+    conf_e.each_with_index {|ce, i| print "[#{i+1}] #{ce}\t" }
+    print "[#{conf_e.count+1}] 該当なし\n"
+    ok_e = false
+    while !ok_e
+      print "番号を入力してください => "
+      num = gets.chomp.to_i
+      if (1..conf_e.count+1).include?(num) then
+        @e = conf_e[num-1]
+        ok_e = true
+        unless num == conf_e.count+1 then
+          puts "entity に #{@e} を設定しました。"
+          puts ""
+        end
+      end
+    end
   end
   if !conf_a.empty? then
     if conf_a.count > 1 then conf_a.uniq! end
     puts "もしかして、#{@a} は #{conf_a.join(" か ")} ですか？"
-    conf_a.each_with_index {|ca, i| print "[#{i+1}] #{ca} " }
-    print "[#{conf_a.count+1}] 該当なし"
-    puts ""
+    conf_a.each_with_index {|ca, i| print "[#{i+1}] #{ca}\t" }
+    print "[#{conf_a.count+1}] 該当なし\n"
+    ok_a = false
+    while !ok_a
+      print "番号を入力してください => "
+      num = gets.chomp.to_i
+      if (1..conf_a.count+1).include?(num) then
+        @a = conf_a[num-1]
+        ok_a = true
+        unless num == conf_a.count+1 then
+          puts "attribute に #{@a} を設定しました。"
+          puts ""
+        end
+      end
+    end
   end
 
+  res = @connect.exec("select * from alkali where entity like '#{@e}' AND attribute like '#{@a}' AND value like '%'")
   if res.to_a.empty? then
-    puts "該当する文字がデータベースにありません。問題を作りなおしてください。"
+    puts "ASQは「#{@e} の#{@a} は何ですか」について知りません。"
     puts ""
     return false
-  else return true end
+  else
+    puts "それでは、「#{@e} の #{@a} は何ですか？」に対する正答と誤答を入力してください。"
+    return true
+  end
 end
 
 def search(e, a, v)
@@ -140,6 +167,9 @@ if res1.count == 0 then
           #message("r")
           #flag = true
           input
+          while !check(@e, @a) do
+            input
+          end
         end
       #end
     else
