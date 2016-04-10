@@ -61,9 +61,9 @@ def check(e, a)
       print "番号を入力してください => "
       num = gets.chomp.to_i
       if (1..conf_e.count+1).include?(num) then
-        @e = conf_e[num-1]
         ok_e = true
         unless num == conf_e.count+1 then
+          @e = conf_e[num-1]
           puts "entity に #{@e} を設定しました。"
           puts ""
         end
@@ -80,9 +80,9 @@ def check(e, a)
       print "番号を入力してください => "
       num = gets.chomp.to_i
       if (1..conf_a.count+1).include?(num) then
-        @a = conf_a[num-1]
         ok_a = true
         unless num == conf_a.count+1 then
+          @a = conf_a[num-1]
           puts "attribute に #{@a} を設定しました。"
           puts ""
         end
@@ -92,11 +92,12 @@ def check(e, a)
 
   res = @connect.exec("select * from alkali where entity like '#{@e}' AND attribute like '#{@a}' AND value like '%'")
   if res.to_a.empty? then
-    puts "ASQは「#{@e} の#{@a} は何ですか」について知りません。"
-    puts ""
+    puts "ASQは「#{@e} の #{@a} は何ですか」について知りません。"
+    puts "この問題について、教えてください。"
+    unknown
     return false
   else
-    puts "それでは、「#{@e} の #{@a} は何ですか？」に対する正答と誤答を入力してください。"
+    puts "それでは、「#{@e} の #{@a} は何ですか？」に対する正答と誤答3つを入力してください。"
     return true
   end
 end
@@ -118,21 +119,44 @@ def message(msg)
   case msg
   when "r"
     puts "正答が間違っています。"
-    puts "正しくは、#{@e}の#{@a}は#{right(@e, @a)}です。"
+    puts "正しくは、#{@e} の #{@a} は #{right(@e, @a)} です。"
   when "w1"
     puts "誤答1が間違っています。"
-    puts "「#{@e}の#{@a}は#{wrong(@e, @a, @w1)}」は正しいです。"
+    puts "「#{@e} の #{@a} は #{wrong(@e, @a, @w1)}」は正しいです。"
   when "w2"
     puts "誤答2が間違っています。"
-    puts "「#{@e}の#{@a}は#{wrong(@e, @a, @w2)}」は正しいです。"
+    puts "「#{@e} の #{@a} は #{wrong(@e, @a, @w2)}」は正しいです。"
   when "w3"
     puts "誤答3が間違っています。"
-    puts "「#{@e}の#{@a}は#{wrong(@e, @a, @w3)}」は正しいです。"
+    puts "「#{@e} の #{@a} は #{wrong(@e, @a, @w3)}」は正しいです。"
   end
 end
 
 def ld(w1, w2)
   Levenshtein.normalized_distance(w1, w2)
+end
+
+def retype
+  puts "それでは、もう一度入力してください。"
+  print "=> "
+  re = gets.chomp
+  return re
+end
+
+def unknown
+  now = Time.now.strftime("%y%m%d%H%M%S").to_s
+  fn = now + ".txt"
+  print "=> "
+  str = gets.chomp
+  pre = "#{@e} の #{@a} は何ですか？に関する知識\n"
+  File.open(fn, 'w') do |file|
+    file.write pre
+    file.write str
+  end
+  puts ""
+  puts "教えて頂きありがとうございました。"
+  puts "それでは、別の問題についても作成してみましょう。"
+  puts ""
 end
 
 input
