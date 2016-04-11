@@ -7,6 +7,7 @@ group :development, :test do
   gem 'pry-stack_explorer'
 end
 
+gem 'devise'
 gem 'slim-rails'
 gem 'natto'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
