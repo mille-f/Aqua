@@ -35,6 +35,7 @@ def check(e, a)
   conf_a = Array.new()
   ents.each do |ent|
     if ld(@e, ent.fetch("entity")) == 0 then
+      puts "entity に #{@e} を設定しました。"
       conf_e.clear
       break
     end
@@ -44,6 +45,7 @@ def check(e, a)
   end
   atts.each do |att|
     if ld(@a, att.fetch("attribute")) == 0 then
+      puts "attribute に #{@a} を設定しました。"
       conf_a.clear
       break
     end
