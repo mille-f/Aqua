@@ -8,6 +8,7 @@ group :development, :test do
 end
 
 gem 'devise'
+gem 'font-awesome-rails'
 gem 'slim-rails'
 gem 'natto'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
