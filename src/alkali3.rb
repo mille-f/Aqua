@@ -53,25 +53,35 @@ def check(e, a)
       conf_a.push(att.fetch("attribute"))
     end
   end
+
   if !conf_e.empty? then
     if conf_e.count >= 1 then conf_e.uniq! end
     puts "もしかして、#{@e} は #{conf_e.join(" か ")} ですか？"
-    conf_e.each_with_index {|ce, i| print "[#{i+1}] #{ce}\t" }
-    print "[#{conf_e.count+1}] 該当なし\n"
-    ok_e = false
-    while !ok_e
-      print "番号を入力してください => "
-      num = gets.chomp.to_i
-      if (1..conf_e.count+1).include?(num) then
-        ok_e = true
-        unless num == conf_e.count+1 then
-          @e = conf_e[num-1]
-          puts "entity に #{@e} を設定しました。"
-          puts ""
+    if conf_e.count >= 2 then
+      conf_e.each_with_index {|ce, i| print "[#{i+1}] #{ce}\t" }
+      print "[#{conf_e.count+1}] 該当なし\n"
+      ok_e = false
+      while !ok_e
+        print "番号を入力してください => "
+        num = gets.chomp.to_i
+        if (1..conf_e.count+1).include?(num) then
+          ok_e = true
+          if num != conf_e.count+1 then
+            @e = conf_e[num-1]
+            puts "entity に #{@e} を設定しました。"
+            puts ""
+          else
+            2.times do
+              re = retype
+            end
+          end
         end
       end
+    else
+      print "[1] はい\t[2] いいえ\n"
     end
   end
+
   if !conf_a.empty? then
     if conf_a.count > 1 then conf_a.uniq! end
     puts "もしかして、#{@a} は #{conf_a.join(" か ")} ですか？"
@@ -141,8 +151,8 @@ end
 def retype
   puts "それでは、もう一度入力してください。"
   print "=> "
-  re = gets.chomp
-  return re
+  ret = gets.chomp
+  return ret
 end
 
 def unknown
