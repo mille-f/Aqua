@@ -55,6 +55,6 @@ class QuestionController < ApplicationController
   end
 
   def list
-    @data = Alkali.all
+    @data = Test1Alkali.all
   end
 end

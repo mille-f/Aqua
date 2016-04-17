@@ -1,6 +1,6 @@
 <table border='1' class="table table-hover">
   <tr>
-    <th>entity</th><th>attribute</th><th>value</th>
+    <th>entity</th><th>attribute</th><th>value</th><th>flag</th>
   </tr>
 
 <% @data.each do |datum| %>
@@ -8,6 +8,7 @@
     <td><%= datum.ent %></td>
     <td><%= datum.att %></td>
     <td><%= datum.val %></td>
+    <td><%= datum.flag %></td>
   </tr>
 <% end %>
 </table>

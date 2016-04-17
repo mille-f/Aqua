@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160412190816) do
+ActiveRecord::Schema.define(version: 20160417032336) do
 
   create_table "alkalis", force: :cascade do |t|
     t.string   "ent",        limit: 255
@@ -19,6 +19,15 @@ ActiveRecord::Schema.define(version: 20160412190816) do
     t.string   "val",        limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "test1_alkalis", force: :cascade do |t|
+    t.string   "ent",        limit: 255
+    t.string   "att",        limit: 255
+    t.string   "val",        limit: 255
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "flag",       limit: 1,   default: false
   end
 
   create_table "testcases", force: :cascade do |t|
