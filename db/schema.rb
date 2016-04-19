@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 20160417032336) do
     t.boolean  "flag",       limit: 1,   default: false
   end
 
+  create_table "test2_alkalis", force: :cascade do |t|
+    t.string   "ent",        limit: 255
+    t.string   "att",        limit: 255
+    t.string   "val",        limit: 255
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "flag",       limit: 1,   default: false
+  end
+
   create_table "testcases", force: :cascade do |t|
     t.string   "entity",     limit: 255
     t.string   "attribute",  limit: 255
@@ -39,7 +48,7 @@ ActiveRecord::Schema.define(version: 20160417032336) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "email",                  limit: 255
     t.string   "encrypted_password",     limit: 255, default: "", null: false
     t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
@@ -54,7 +63,7 @@ ActiveRecord::Schema.define(version: 20160417032336) do
     t.string   "username",               limit: 255
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  #add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
