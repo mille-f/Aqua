@@ -391,3 +391,4 @@ if res4.count >= 1 then
 end
 
 if flag == false then puts "良い問題ですね。" end
+@client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
