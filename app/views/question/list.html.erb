@@ -1,8 +1,8 @@
-<h3><%= @user %>さん</h3>
+<h3><%= @user %> さん</h3>
 
 <table border='1' class="table table-hover">
   <tr>
-    <th>entity</th><th>attribute</th><th>value</th><th>flag</th>
+    <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
   </tr>
 
 <% @data.each do |datum| %>
@@ -10,7 +10,7 @@
     <td><%= datum.ent %></td>
     <td><%= datum.att %></td>
     <td><%= datum.val %></td>
-    <td><%= datum.flag %></td>
+    <td class=<%= @color[datum.state] %>><%= @state[datum.state] %></td>
   </tr>
 <% end %>
 </table>
