@@ -1,4 +1,6 @@
 class QuestionController < ApplicationController
+  before_action :authenticate_user!, only: :list
+
   def create
     con = ActiveRecord::Base.connection
     nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
@@ -55,6 +57,7 @@ class QuestionController < ApplicationController
   end
 
   def list
-    @data = Alkali.all
+    @user = current_user.username.to_s.capitalize
+    @data = "#{@user}Alkali".constantize.all
   end
 end
