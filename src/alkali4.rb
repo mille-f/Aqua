@@ -213,7 +213,7 @@ def check
   estimate_a
   res = @connect.exec("select * from alkali where entity like '#{@e}' AND attribute like '#{@a}' AND value like '%'")
   if res.to_a.empty? then
-    puts "「#{@e} の #{@a} は何ですか？」以外の問題を作成してみましょう。"
+    puts "それでは、「#{@e} の #{@a} は何ですか？」以外の問題を作成してみましょう。"
     return false
   else
     puts "それでは、「#{@e} の #{@a} は何ですか？」に対する正答と誤答3つを入力してください。"
@@ -275,8 +275,8 @@ def unknown(word)
     file.write str
   end
   puts ""
+  puts "#{word} は #{str} ですね。わかりました。"
   puts "教えて頂きありがとうございました。"
-  puts "それでは、別の問題についても作成してみましょう。"
   puts ""
 end
 
