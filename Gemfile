@@ -15,6 +15,7 @@ gem 'cancancan'
 gem 'font-awesome-rails'
 gem 'slim-rails'
 gem 'natto'
+gem 'rails-i18n'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.1'
 # Use sqlite3 as the database for Active Record
