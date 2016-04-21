@@ -57,8 +57,11 @@ class QuestionController < ApplicationController
   end
 
   def list
+    @role  = current_user.role.to_i
     @user  = current_user.username.to_s.capitalize
-    @data  = "#{@user}Alkali".constantize.all
+    if @role == 0 then
+      @data  = "#{@user}Alkali".constantize.all
+    end
     @state = {0 => "未知", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
   end
