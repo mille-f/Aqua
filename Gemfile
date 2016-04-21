@@ -10,6 +10,7 @@ group :development, :test do
 end
 
 gem 'devise'
+gem 'cancancan'
 gem 'font-awesome-rails'
 gem 'slim-rails'
 gem 'natto'
