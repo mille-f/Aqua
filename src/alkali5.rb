@@ -28,6 +28,14 @@ def signin
   if @username.empty? then
     error_msg
     signin
+  else
+    if @client.query("select * from users where username = '#{@username}'").count == 0 then
+    puts "ユーザが存在しません。もう一度入力してください。"
+    puts ""
+    signin
+    else
+      puts "ようこそ、#{@username} さん。"
+    end
   end
 end
 
@@ -327,7 +335,7 @@ def answer(target)
       answer("wrong2")
     end
   when "wrong3"
-    print "誤答3 =>"
+    print "誤答3 => "
     @w3 = gets.chomp
     if @w3.empty? then
       error_msg
@@ -374,21 +382,27 @@ if res1.count == 0 then
       #end
     else
       message("r")
+      @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
       flag = true
     end
 end
 if res2.count >= 1 then
   message("w1")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w1}'")
   flag = true
 end
 if res3.count >= 1 then
   message("w2")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w2}'")
   flag = true
 end
 if res4.count >= 1 then
   message("w3")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w3}'")
   flag = true
 end
 
-if flag == false then puts "良い問題ですね。" end
-@client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+if flag == false then
+  puts "良い問題ですね。"
+  @client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+end
