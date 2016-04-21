@@ -9,6 +9,7 @@ group :development, :test do
   gem 'binding_of_caller'
 end
 
+gem 'activeadmin', github: 'activeadmin'
 gem 'devise'
 gem 'cancancan'
 gem 'font-awesome-rails'
