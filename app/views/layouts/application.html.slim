@@ -30,7 +30,8 @@ html lang="ja"
             ul.nav.navbar-nav
               li= link_to "問題作成", "/question/create"
               li= link_to "リスト", "/question/list"
-              li= link_to "データ登録", "#"
+              -if user_signed_in? && current_user.role == 1
+                li= link_to "Test", "#"
             ul.nav.navbar-nav.navbar-right
               li.dropdown
                 a.dropdown-toggle href="#" data-toggle="dropdown" role="button" aria-expended="false"
