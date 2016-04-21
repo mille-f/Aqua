@@ -10,4 +10,6 @@ class User < ActiveRecord::Base
     false
   end
 
+  #enum role: %(admin normal)
+
 end

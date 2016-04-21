@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  ActiveAdmin.routes(self)
   devise_for :users
   post 'question/create' => 'question#create'
   get 'question/create'
