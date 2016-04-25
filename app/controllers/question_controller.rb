@@ -62,31 +62,26 @@ class QuestionController < ApplicationController
     if @role == 0 then
       @data  = "#{@user}Alkali".constantize.all
     end
-    @state = {0 => "未知", 1 => "既知", 2 => "誤り", 3 => "定着"}
+    @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
   end
 
   def semnet
-    ent = Array.new
-    val = Array.new
+    node = Array.new
     triad = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
     color = {0 => "#FCF8E3", 1 => "#D9EDF7", 2 => "#F2DEDE", 3 => "#DFF0D8"}
     role  = current_user.role.to_i
     user  = current_user.username.to_s.capitalize
     if role == 0 then
       data  = "#{user}Alkali".constantize.all
-      gon.num = data.count
       data.each do |datum|
-        ent.push(datum.ent)
-        val.push(datum.val)
+        node.push(datum.ent)
+        node.push(datum.val)
         triad[datum.ent][datum.val] = datum.att
         gon.color = color[datum.state]
       end
-      gon.ent = ent.uniq!
-      gon.entnum = ent.count
-      gon.val = val.uniq!
-      gon.valnum = val.count
       gon.triad = triad
+      gon.node = node.uniq!
     end
   end
 end
