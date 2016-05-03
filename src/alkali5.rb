@@ -2,6 +2,8 @@ require 'mysql2'
 require 'natto'
 require 'levenshtein'
 
+$stdout.sync = true
+
 $cnt_e = 0  # entityの推定回数に使用するカウンタ
 $cnt_a = 0  # attributeの推定回数に使用するカウンタ
 $match_e = false
@@ -24,7 +26,7 @@ end
 def signin
   puts "ユーザ名を入力してください。"
   print "=> "
-  @username = gets.chomp
+  @username = STDIN.gets.chomp
   if @username.empty? then
     error_msg
     signin
@@ -58,9 +60,13 @@ def mecab
       noun.push(n.surface)
     end
   end
-
-  @e = noun[0]
-  @a = noun[1]
+  if noun.count < 2 then
+    puts "入力の形式が間違っています。もう一度入力してください。"
+    input
+  else
+    @e = noun[0]
+    @a = noun[1]
+  end
 end
 
 def search_e
