@@ -69,18 +69,22 @@ class QuestionController < ApplicationController
   def semnet
     node = Array.new
     triad = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
+    state = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
     color = {0 => "#FCF8E3", 1 => "#D9EDF7", 2 => "#F2DEDE", 3 => "#DFF0D8"}
     role  = current_user.role.to_i
     user  = current_user.username.to_s.capitalize
     if role == 0 then
       data  = "#{user}Alkali".constantize.all
       data.each do |datum|
+        if datum.state == 0 then
         node.push(datum.ent)
         node.push(datum.val)
+        end
         triad[datum.ent][datum.val] = datum.att
-        gon.color = color[datum.state]
+        state[datum.ent][datum.val] = color[datum.state]
       end
       gon.triad = triad
+      gon.state = state
       gon.node = node.uniq!
     end
   end
