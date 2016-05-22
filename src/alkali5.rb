@@ -75,7 +75,7 @@ def search_e
   @conf_e = Array.new()
   ents.each do |ent|
     if ld(@e, ent.fetch("ent")) == 0 then
-      puts "entity に #{@e} を設定しました。"
+      #puts "entity に #{@e} を設定しました。"
       $match_e = true
       @conf_e.clear
       break
@@ -103,7 +103,7 @@ def estimate_e
           if num != @conf_e.count+1 then
             @e = @conf_e[num-1]
             $match_e = true
-            puts "entity に #{@e} を設定しました。"
+            #puts "entity に #{@e} を設定しました。"
             puts ""
           else
             if $cnt_e < 2 then
@@ -127,7 +127,7 @@ def estimate_e
           if num == 1 then
             @e = @conf_e[num-1]
             $match_e = true
-            puts "entity に #{@e} を設定しました。"
+            #puts "entity に #{@e} を設定しました。"
             puts ""
           else
             puts "タイプミスですか？"
@@ -163,7 +163,7 @@ def search_a
   @conf_a = Array.new()
   atts.each do |att|
     if ld(@a, att.fetch("att")) == 0 then
-      puts "attribute に #{@a} を設定しました。"
+      #puts "attribute に #{@a} を設定しました。"
       $match_a = true
       @conf_a.clear
       break
@@ -191,7 +191,7 @@ def estimate_a
           if num != @conf_a.count+1 then
             @a = @conf_a[num-1]
             $match_a = true
-            puts "entity に #{@a} を設定しました。"
+            #puts "entity に #{@a} を設定しました。"
             puts ""
           else
             if $cnt_a < 2 then
@@ -215,7 +215,7 @@ def estimate_a
           if num == 1 then
             @a = @conf_a[num-1]
             $match_a = true
-            puts "attribute に #{@a} を設定しました。"
+            #puts "attribute に #{@a} を設定しました。"
             puts ""
           else
             puts "タイプミスですか？"
@@ -350,65 +350,107 @@ def answer(target)
   end
 end
 
-### main関数 ###
+def judge
+  answer("right")
+  answer("wrong1")
+  answer("wrong2")
+  answer("wrong3")
 
-signin
-input
-while !check do
-  input
-end
+  res1 = search(@e, @a, @v)
+  res2 = search(@e, @a, @w1)
+  res3 = search(@e, @a, @w2)
+  res4 = search(@e, @a, @w3)
 
-answer("right")
-answer("wrong1")
-answer("wrong2")
-answer("wrong3")
+  puts ""
 
-res1 = search(@e, @a, @v)
-res2 = search(@e, @a, @w1)
-res3 = search(@e, @a, @w2)
-res4 = search(@e, @a, @w3)
-
-puts ""
-
-flag = false
-if res1.count == 0 then
+  flag = false
+  if res1.count == 0 then
     if ld(@v, right(@e, @a)) <= 0.5 then
       #if right(@e, @a).split(/\s*/).ngram(2).flatten.include?(@v) then
-        puts "もしかして: #{right(@e, @a)} ですか？"
-        print "Yes!(y), No!(n) => "
-        c = gets.chomp
-        if c == "n" then
-          #message("r")
-          #flag = true
+      puts "もしかして: #{right(@e, @a)} ですか？"
+      print "Yes!(y), No!(n) => "
+      c = gets.chomp
+      if c == "n" then
+        #message("r")
+        #flag = true
+        input
+        while !check do
           input
-          while !check do
-            input
-          end
         end
+      end
       #end
     else
       message("r")
       @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
       flag = true
     end
-end
-if res2.count >= 1 then
-  message("w1")
-  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w1}'")
-  flag = true
-end
-if res3.count >= 1 then
-  message("w2")
-  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w2}'")
-  flag = true
-end
-if res4.count >= 1 then
-  message("w3")
-  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w3}'")
-  flag = true
+  end
+  if res2.count >= 1 then
+    message("w1")
+    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w1}'")
+    flag = true
+  end
+  if res3.count >= 1 then
+    message("w2")
+    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w2}'")
+    flag = true
+  end
+  if res4.count >= 1 then
+    message("w3")
+    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w3}'")
+    flag = true
+  end
+
+  if flag == false then
+    puts "良い問題ですね。"
+    @client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+  end
 end
 
-if flag == false then
-  puts "良い問題ですね。"
-  @client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+def calc_intelli
+  node = Array.new
+  all_nodes = Hash.new(0) # 全ノード
+  ack_nodes = Hash.new(0) # 既知ノード
+  intelli   = Hash.new(0) # 理解度
+  data = @client.query("select * from #{@username}_alkalis")
+
+  data.each do |datum|
+    node.push(datum.fetch("ent"))
+    node.push(datum.fetch("val"))
+  end
+
+  node.each do |elem|
+    all_nodes[elem] += 1
+    ack_nodes[elem] = 0
+  end
+
+  node.uniq!.each do |elem|
+    data.each do |datum|
+      if datum.fetch("ent") == elem || datum.fetch("val") == elem then
+        if datum.fetch("state") == 1
+          ack_nodes[elem] += 1
+        end
+      end
+    end
+  end
+
+  #p all_nodes.sort_by {|k,v| v}.reverse
+  #p ack_nodes.sort_by {|k,v| v}.reverse
+
+  node.each do |elem|
+    intelli[elem] = ack_nodes[elem] / all_nodes[elem].to_f
+  end
+  p intelli
 end
+
+### main関数 ###
+
+signin
+=begin
+input
+while !check do
+  input
+end
+judge
+=end
+calc_intelli
