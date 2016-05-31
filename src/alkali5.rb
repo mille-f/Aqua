@@ -381,23 +381,23 @@ def judge
       #end
     else
       message("r")
-      @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+      @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{right(@e, @a)}'")
       flag = true
     end
   end
   if res2.count >= 1 then
     message("w1")
-    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w1}'")
+    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{wrong(@e, @a, @w1)}'")
     flag = true
   end
   if res3.count >= 1 then
     message("w2")
-    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w2}'")
+    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{wrong(@e, @a, @w2)}'")
     flag = true
   end
   if res4.count >= 1 then
     message("w3")
-    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w3}'")
+    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{wrong(@e, @a, @w3)}'")
     flag = true
   end
 
@@ -414,16 +414,18 @@ def calc_intelli
   intelli   = Hash.new(0) # 理解度
   data = @client.query("select * from #{@username}_alkalis")
 
+  # 配列にノードとなり得る値を追加
   data.each do |datum|
     node.push(datum.fetch("ent"))
     node.push(datum.fetch("val"))
   end
 
   node.each do |elem|
-    all_nodes[elem] += 1
-    ack_nodes[elem] = 0
+    all_nodes[elem] += 1  # 全ノード数のカウント
+    ack_nodes[elem] = 0   # 既知ノード数の初期化
   end
 
+  # 隣接既知ノード数の計算
   node.uniq!.each do |elem|
     data.each do |datum|
       if datum.fetch("ent") == elem || datum.fetch("val") == elem then
@@ -437,10 +439,35 @@ def calc_intelli
   #p all_nodes.sort_by {|k,v| v}.reverse
   #p ack_nodes.sort_by {|k,v| v}.reverse
 
+  # 理解度の計算
   node.each do |elem|
-    intelli[elem] = ack_nodes[elem] / all_nodes[elem].to_f
+    if all_nodes[elem] > 1
+      puts "#{elem} : #{ack_nodes[elem]} / #{all_nodes[elem]}"
+      intelli[elem] = ack_nodes[elem] / all_nodes[elem].to_f
+    end
   end
-  p intelli
+
+  induction(intelli)
+end
+
+def induction(intelli)
+  intelli.sort_by {|k,v| v}.each do |key, value|
+    puts "#{key} について作問できますか？"
+    print "[1] はい\t[2] いいえ\n"
+    ok_a = false
+    while !ok_a
+      print "番号を入力してください => "
+      num = gets.chomp.to_i
+      if (1..2).include?(num) then
+        ok_a = true
+        if num == 1 then
+          exit
+        else
+          break
+        end
+      end
+    end
+  end
 end
 
 ### main関数 ###
