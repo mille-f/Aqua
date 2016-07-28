@@ -411,7 +411,7 @@ def calc_intelli
   node = Array.new
   all_nodes = Hash.new(0) # 全ノード
   ack_nodes = Hash.new(0) # 既知ノード
-  intelli   = Hash.new(0) # 理解度
+  intelli   = Hash.new{ |h,k| h[k] = {} } # 単語、母数、理解度の三つ組
   data = @client.query("select * from #{@username}_alkalis")
 
   # 配列にノードとなり得る値を追加
@@ -443,16 +443,17 @@ def calc_intelli
   node.each do |elem|
     if all_nodes[elem] > 1
       puts "#{elem} : #{ack_nodes[elem]} / #{all_nodes[elem]}"
-      intelli[elem] = ack_nodes[elem] / all_nodes[elem].to_f
+      intelli[elem][all_nodes[elem]] = ack_nodes[elem] / all_nodes[elem].to_f
     end
   end
-
+  p intelli.sort_by {|h| h.first}.reverse
   induction(intelli)
 end
 
 def induction(intelli)
-  intelli.sort_by {|k,v| v}.each do |key, value|
-    puts "#{key} について作問できますか？"
+  intelli.sort_by {|h| h.first}.reverse.each do |key, value|
+    if value == 1 then break end  # 全て作問済みならスキップ
+    puts "\n#{key} について作問できますか？"
     print "[1] はい\t[2] いいえ\n"
     ok_a = false
     while !ok_a
