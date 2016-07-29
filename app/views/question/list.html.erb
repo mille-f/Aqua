@@ -1,7 +1,7 @@
-<% if @role == 0 %>
+<% if @role == 1 %>
   <h3><%= @user %> さん</h3>
   <div><a class="btn btn-primary" href="/question/semnet">意味ネットワーク</a></div><br>
-<% elsif @role == 1 %>
+<% elsif @role == 0 %>
   <h3> teacher </h3>
   <table border='1' class="table table-hover">
     <tr>
