@@ -1,11 +1,12 @@
-<% if @role == 0 %>
+<% if @role == 1 %>
   <h3><%= @user %> さん</h3>
-
+  <div><a class="btn btn-primary" href="/question/semnet">意味ネットワーク</a></div><br>
+<% elsif @role == 0 %>
+  <h3> teacher </h3>
   <table border='1' class="table table-hover">
     <tr>
       <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
     </tr>
-
     <% @data.each do |datum| %>
       <tr>
         <td><%= datum.ent %></td>
@@ -15,6 +16,4 @@
       </tr>
     <% end %>
   </table>
-<% elsif @role == 1 %>
-  <p> teacher </p>
 <% end %>

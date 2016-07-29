@@ -18,6 +18,12 @@ module Enumerable
   end
 end
 
+def log(str)
+  File.open("log.txt", 'a') do |file|
+    file.write(str)
+  end
+end
+
 def error_msg
   puts "入力されていません。もう一度入力してください。"
   puts ""
@@ -26,7 +32,9 @@ end
 def signin
   puts "ユーザ名を入力してください。"
   print "=> "
-  @username = STDIN.gets.chomp
+  @username = gets.chomp
+  log(@username)
+  puts ""
   if @username.empty? then
     error_msg
     signin
@@ -36,7 +44,7 @@ def signin
     puts ""
     signin
     else
-      puts "ようこそ、#{@username} さん。"
+      puts "ようこそ、#{@username} さん。\n"
     end
   end
 end
@@ -45,6 +53,8 @@ def input
   puts "問題を作成してください。(例:XのYは何ですか？)"
   print "=> "
   @txt = gets.chomp
+  log(@txt)
+  puts ""
   if @txt.empty? then
     error_msg
     input
@@ -98,13 +108,15 @@ def estimate_e
       while !ok_e
         print "番号を入力してください => "
         num = gets.chomp.to_i
+        log(num)
+        puts ""
         if (1..@conf_e.count+1).include?(num) then
           ok_e = true
           if num != @conf_e.count+1 then
             @e = @conf_e[num-1]
             $match_e = true
             #puts "entity に #{@e} を設定しました。"
-            puts ""
+            #puts ""
           else
             if $cnt_e < 2 then
               @e = retype
@@ -122,13 +134,15 @@ def estimate_e
       while !ok_e
         print "番号を入力してください => "
         num = gets.chomp.to_i
+        log(num)
+        puts ""
         if (1..2).include?(num) then
           ok_e = true
           if num == 1 then
             @e = @conf_e[num-1]
             $match_e = true
             #puts "entity に #{@e} を設定しました。"
-            puts ""
+            #puts ""
           else
             puts "タイプミスですか？"
             print "[1] はい\t[2] いいえ\n"
@@ -136,6 +150,8 @@ def estimate_e
             while !ok_e
               print "番号を入力してください => "
               num = gets.chomp.to_i
+              log(num)
+              puts ""
               if (1..2).include?(num) then
                 ok_e = true
                 if num == 1 then
@@ -186,13 +202,15 @@ def estimate_a
       while !ok_a
         print "番号を入力してください => "
         num = gets.chomp.to_i
+        log(num)
+        puts ""
         if (1..@conf_a.count+1).include?(num) then
           ok_a = true
           if num != @conf_a.count+1 then
             @a = @conf_a[num-1]
             $match_a = true
             #puts "entity に #{@a} を設定しました。"
-            puts ""
+            #puts ""
           else
             if $cnt_a < 2 then
               @a = retype
@@ -210,13 +228,15 @@ def estimate_a
       while !ok_a
         print "番号を入力してください => "
         num = gets.chomp.to_i
+        log(num)
+        puts ""
         if (1..2).include?(num) then
           ok_a = true
           if num == 1 then
             @a = @conf_a[num-1]
             $match_a = true
             #puts "attribute に #{@a} を設定しました。"
-            puts ""
+            #puts ""
           else
             puts "タイプミスですか？"
             print "[1] はい\t[2] いいえ\n"
@@ -224,6 +244,8 @@ def estimate_a
             while !ok_a
               print "番号を入力してください => "
               num = gets.chomp.to_i
+              log(num)
+              puts ""
               if (1..2).include?(num) then
                 ok_a = true
                 if num == 1 then
@@ -250,6 +272,7 @@ def check
   estimate_a
   res = @client.query("select * from alkalis where ent like '#{@e}' AND att like '#{@a}' AND val like '%'")
   if res.to_a.empty? then
+    puts "問題が正しくないようです。"
     puts "それでは、「#{@e} の #{@a} は何ですか？」以外の問題を作成してみましょう。"
     return false
   else
@@ -296,6 +319,8 @@ def retype
   puts "それでは、もう一度入力してください。"
   print "=> "
   ret = gets.chomp
+  log(ret)
+  puts ""
   return ret
 end
 
@@ -311,8 +336,9 @@ def unknown(word)
     file.write pre
     file.write str
   end
+  log(str)
   puts ""
-  puts "#{word} は #{str} ですね。わかりました。"
+  puts "#{word} に関する知識は「#{str}」ですね。わかりました。"
   puts "教えて頂きありがとうございました。"
   puts ""
 end
@@ -322,6 +348,8 @@ def answer(target)
   when "right"
     print "正答 => "
     @v = gets.chomp
+    log(@v)
+    puts ""
     if @v.empty? then
       error_msg
       answer("right")
@@ -329,6 +357,8 @@ def answer(target)
   when "wrong1"
     print "誤答1 => "
     @w1 = gets.chomp
+    log(@w1)
+    puts ""
     if @w1.empty? then
       error_msg
       answer("wrong1")
@@ -336,6 +366,8 @@ def answer(target)
   when "wrong2"
     print "誤答2 => "
     @w2 = gets.chomp
+    log(@w2)
+    puts ""
     if @w2.empty? then
       error_msg
       answer("wrong2")
@@ -343,6 +375,8 @@ def answer(target)
   when "wrong3"
     print "誤答3 => "
     @w3 = gets.chomp
+    log(@w3)
+    puts ""
     if @w3.empty? then
       error_msg
       answer("wrong3")
@@ -350,135 +384,50 @@ def answer(target)
   end
 end
 
-def judge
-  answer("right")
-  answer("wrong1")
-  answer("wrong2")
-  answer("wrong3")
-
-  res1 = search(@e, @a, @v)
-  res2 = search(@e, @a, @w1)
-  res3 = search(@e, @a, @w2)
-  res4 = search(@e, @a, @w3)
-
-  puts ""
-
-  flag = false
-  if res1.count == 0 then
-    if ld(@v, right(@e, @a)) <= 0.5 then
-      #if right(@e, @a).split(/\s*/).ngram(2).flatten.include?(@v) then
-      puts "もしかして: #{right(@e, @a)} ですか？"
-      print "Yes!(y), No!(n) => "
-      c = gets.chomp
-      if c == "n" then
-        #message("r")
-        #flag = true
-        input
-        while !check do
-          input
-        end
-      end
-      #end
-    else
-      message("r")
-      @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{right(@e, @a)}'")
-      flag = true
-    end
-  end
-  if res2.count >= 1 then
-    message("w1")
-    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{wrong(@e, @a, @w1)}'")
-    flag = true
-  end
-  if res3.count >= 1 then
-    message("w2")
-    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{wrong(@e, @a, @w2)}'")
-    flag = true
-  end
-  if res4.count >= 1 then
-    message("w3")
-    @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{wrong(@e, @a, @w3)}'")
-    flag = true
-  end
-
-  if flag == false then
-    puts "良い問題ですね。"
-    @client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
-  end
-end
-
-def calc_intelli
-  node = Array.new
-  all_nodes = Hash.new(0) # 全ノード
-  ack_nodes = Hash.new(0) # 既知ノード
-  intelli   = Hash.new{ |h,k| h[k] = {} } # 単語、母数、理解度の三つ組
-  data = @client.query("select * from #{@username}_alkalis")
-
-  # 配列にノードとなり得る値を追加
-  data.each do |datum|
-    node.push(datum.fetch("ent"))
-    node.push(datum.fetch("val"))
-  end
-
-  node.each do |elem|
-    all_nodes[elem] += 1  # 全ノード数のカウント
-    ack_nodes[elem] = 0   # 既知ノード数の初期化
-  end
-
-  # 隣接既知ノード数の計算
-  node.uniq!.each do |elem|
-    data.each do |datum|
-      if datum.fetch("ent") == elem || datum.fetch("val") == elem then
-        if datum.fetch("state") == 1
-          ack_nodes[elem] += 1
-        end
-      end
-    end
-  end
-
-  #p all_nodes.sort_by {|k,v| v}.reverse
-  #p ack_nodes.sort_by {|k,v| v}.reverse
-
-  # 理解度の計算
-  node.each do |elem|
-    if all_nodes[elem] > 1
-      puts "#{elem} : #{ack_nodes[elem]} / #{all_nodes[elem]}"
-      intelli[elem][all_nodes[elem]] = ack_nodes[elem] / all_nodes[elem].to_f
-    end
-  end
-  p intelli.sort_by {|h| h.first}.reverse
-  induction(intelli)
-end
-
-def induction(intelli)
-  intelli.sort_by {|h| h.first}.reverse.each do |key, value|
-    if value == 1 then break end  # 全て作問済みならスキップ
-    puts "\n#{key} について作問できますか？"
-    print "[1] はい\t[2] いいえ\n"
-    ok_a = false
-    while !ok_a
-      print "番号を入力してください => "
-      num = gets.chomp.to_i
-      if (1..2).include?(num) then
-        ok_a = true
-        if num == 1 then
-          exit
-        else
-          break
-        end
-      end
-    end
-  end
-end
-
 ### main関数 ###
+log("\n--------------")
+log(Time.now.strftime("%y%m%d%H%M%S").to_s)
+log("--------------\n")
 
 signin
-=begin
 input
 while !check do
   input
 end
-judge
-=end
-calc_intelli
+
+answer("right")
+answer("wrong1")
+answer("wrong2")
+answer("wrong3")
+
+res1 = search(@e, @a, @v)
+res2 = search(@e, @a, @w1)
+res3 = search(@e, @a, @w2)
+res4 = search(@e, @a, @w3)
+
+flag = false
+if res1.count == 0 then
+  message("r")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+  flag = true
+end
+if res2.count >= 1 then
+  message("w1")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w1}'")
+  flag = true
+end
+if res3.count >= 1 then
+  message("w2")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w2}'")
+  flag = true
+end
+if res4.count >= 1 then
+  message("w3")
+  @client.query("update #{@username}_alkalis set state = 2 where ent = '#{@e}' and att = '#{@a}' and val = '#{@w3}'")
+  flag = true
+end
+
+if flag == false then
+  puts "良い問題ですね。"
+  @client.query("update #{@username}_alkalis set state = 1 where ent = '#{@e}' and att = '#{@a}' and val = '#{@v}'")
+end

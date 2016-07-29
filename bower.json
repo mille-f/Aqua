@@ -1,0 +1,21 @@
+{
+  "name": "aquarium",
+  "homepage": "https://github.com/mille-f/Aqua",
+  "authors": [
+    "mille-f <f11235tetra@gmail.com>"
+  ],
+  "description": "my application",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vis": "^4.16.1"
+  }
+}

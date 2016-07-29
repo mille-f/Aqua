@@ -10,9 +10,11 @@ group :development, :test do
 end
 
 gem 'activeadmin', github: 'activeadmin'
+gem 'bower-rails'
 gem 'devise'
 gem 'cancancan'
 gem 'font-awesome-rails'
+gem 'gon'
 gem 'slim-rails'
 gem 'natto'
 gem 'rails-i18n'

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   post 'question/create' => 'question#create'
   get 'question/create'
   get 'question/list' => 'question#list'
+  get 'question/semnet' => 'question#semnet'
 
   root 'home#top'
   get '/show' => 'home#show'
