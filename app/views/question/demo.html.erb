@@ -1,0 +1,38 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">hoge</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">foo</div>
+    <div class="col-sm-6">
+      <table id='knowledge-state' border='1' class="table table-hover">
+        <thead>
+          <tr>
+            <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @data.each do |datum| %>
+          <tr class=<%= @color[datum.state] %>>
+            <td><%= datum.ent %></td>
+            <td><%= datum.att %></td>
+            <td><%= datum.val %></td>
+            <td><%= @state[datum.state] %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <script>
+      $(document).ready(function(){
+        $('#knowledge-state').DataTable({
+          "paging": true,
+          "bProcessing": true,
+          "iDisplayLength": 5
+        });
+      });
+      </script>
+    </div>
+  </div>
+</div>

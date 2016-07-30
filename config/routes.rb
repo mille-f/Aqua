@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'question/create'
   get 'question/list' => 'question#list'
   get 'question/semnet' => 'question#semnet'
+  get 'question/demo' => 'question#demo'
 
   root 'home#top'
   get '/show' => 'home#show'
