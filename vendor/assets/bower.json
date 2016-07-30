@@ -1,6 +1,7 @@
 {
   "name": "dsl-generated dependencies",
   "dependencies": {
-    "vis": "latest"
+    "vis": "latest",
+    "jquery.steps": "latest"
   }
 }

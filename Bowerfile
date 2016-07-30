@@ -3,3 +3,4 @@
 
 # asset 'bootstrap'
 asset 'vis'
+asset 'jquery.steps'
