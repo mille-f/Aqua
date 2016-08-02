@@ -5,3 +5,4 @@
 asset 'vis'
 asset 'jquery.steps'
 asset 'bootstrapValidator'
+asset 'datatables'
