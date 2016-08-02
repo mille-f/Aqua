@@ -15,4 +15,5 @@
 //= require twitter/bootstrap
 //= require vis
 //= require jquery.steps
+//= require bootstrapvalidator
 //= require_tree .

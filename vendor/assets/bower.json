@@ -2,6 +2,7 @@
   "name": "dsl-generated dependencies",
   "dependencies": {
     "vis": "latest",
-    "jquery.steps": "latest"
+    "jquery.steps": "latest",
+    "bootstrapValidator": "latest"
   }
 }
