@@ -3,7 +3,7 @@
   "dependencies": {
     "vis": "latest",
     "jquery.steps": "latest",
-    "bootstrapValidator": "latest",
+    "jquery.validation": "latest",
     "datatables": "latest"
   }
 }

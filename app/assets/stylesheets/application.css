@@ -15,6 +15,6 @@
  *= require font-awesome
  *= require vis
  *= require jquery.steps
- *= require bootstrapValidator
+ *= require parsley
  *= require datatables
  */
