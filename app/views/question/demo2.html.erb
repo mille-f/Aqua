@@ -1,0 +1,97 @@
+<div class="container">
+  <div class="row">
+    <div id="hoge" class="col-sm-12">
+      <h3>問題入力過程</h3>
+      <section>
+        <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %>
+          <div class="field">
+            <h4>問題文を入力してください</h4>
+            <div class="col-xs-6">
+              <%= text_field_tag('ajx[answer]', nil, class: 'form-control', placeholder: '例） X の Y は何ですか？', 'required' => '') %>
+            </div>
+            <%= button_tag(type: "submit", class: "btn btn-primary") do %> 作成 <% end %>
+          </div>
+        <% end %>
+      </section>
+      <h3>推定過程</h3>
+      <section>
+        <div id="sec"></div>
+      </section>
+      <h3>正誤判定</h3>
+      <section>
+        <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %>
+          <div class="field">
+            <h4>正答と誤答3つを入力してください。</h4>
+            <div class="col-xs-3">
+              <%= text_field_tag('ajx[answer]', nil, class: 'form-control', placeholder: '正答', 'required' => '') %>
+            </div>
+            <div class="col-xs-3">
+              <%= text_field_tag('ajx[answer]', nil, class: 'form-control', placeholder: '誤答1', 'required' => '') %>
+            </div>
+            <div class="col-xs-3">
+              <%= text_field_tag('ajx[answer]', nil, class: 'form-control', placeholder: '誤答2', 'required' => '') %>
+            </div>
+            <div class="col-xs-3">
+              <%= text_field_tag('ajx[answer]', nil, class: 'form-control', placeholder: '誤答3', 'required' => '') %>
+            </div><br><br><br>
+            <div class="pull-right">
+              <%= button_tag(type: "submit", class: "btn btn-primary") do %> 作成 <% end %>
+            </div>
+          </div>
+        <% end %>
+      </section>
+    </div>
+    <script>
+    $("#hoge").steps({
+      headerTag: "h3",
+      bodyTag: "section",
+      transitionEffect: "slideLeft",
+      autoFocus: true,
+      titleTemplate: "#title#",
+      labels: {
+        next: "次へ",
+        previous: "戻る",
+        finish: "完了！"
+      }
+    });
+    </script>
+  </div>
+  <hr><br>
+  <div class="row">
+    <div class="col-sm-6">
+      <pre class="console">
+        <div id="txt"></div>
+        <div id="entity"></div>
+        <div id="attribute"></div>
+      </pre>
+    </div>
+    <div class="col-sm-6">
+      <table id='knowledge-state' border='1' class="table table-hover">
+        <thead>
+          <tr>
+            <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @data.each do |datum| %>
+          <tr class=<%= @color[datum.state] %>>
+            <td><%= datum.ent %></td>
+            <td><%= datum.att %></td>
+            <td><%= datum.val %></td>
+            <td><%= @state[datum.state] %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      <script>
+      $(document).ready(function(){
+        $('#knowledge-state').DataTable({
+          "paging": true,
+          "bProcessing": true,
+          "iDisplayLength": 6
+        });
+      });
+      </script>
+    </div>
+  </div>
+</div>

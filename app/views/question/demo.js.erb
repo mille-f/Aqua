@@ -1,0 +1,11 @@
+if (<%= @prob %>) {
+  $("#txt").html("問題文「<%= @txt %>」が入力されました。");
+  $("#entity").html("entity に <%= @e %> を設定しました。");
+  $("#attribute").html("attribute に <%= @a %> を設定しました。");
+  $("#sec").html("OK");
+} else {
+  $("#txt").html("問題文が正しくありません。\n\n問題を作りなおしてください。");
+  $("#entity").html("");
+  $("#attribute").html("");
+  $("#sec").html("No");
+}

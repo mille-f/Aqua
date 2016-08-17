@@ -7,3 +7,19 @@
   height: 600px;
   border: 1px solid lightgrey;
 }
+
+pre.console {
+  width: 90%; /*横幅を90%に制限*/
+  line-height: 0.8;
+  padding: 10px 15px; /* 内側の余白（横 縦） */
+  margin: 5px 10px; /* 外側の余白(横 縦) */
+  //background-color: #fff;
+  //color: green;
+  border-top: 2px solid gray; /* 縁取り(solid=棒) */
+  border-left: 2px solid gray; /* 縁取り */
+  border-right: 2px solid silver; /* 縁取り */
+  border-bottom: 2px solid silver; /* 縁取り */
+  overflow:auto;
+  font-size: 16px;
+  font-family:"Courier New",Courier,sans-serif;
+}

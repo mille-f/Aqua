@@ -90,6 +90,26 @@ class QuestionController < ApplicationController
   end
 
   def demo
+    con = ActiveRecord::Base.connection
+    nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
+
+    word = Array.new
+    @prob = false
+    if params['ajx'].present?
+      @txt = params['ajx']['answer']
+      nm.parse(@txt) do |w|
+        if w.feature.split(',')[0] == '名詞' || w.feature.split(',')[0] == '動詞' then
+          word.push(w.surface)
+        end
+      end
+    end
+
+    @e = word[0]
+    @a = word[1]
+    unless con.select_all("select val from alkalis where ent like '#{@e}' and att like '#{@a}' and val like '%'").to_a.empty? then
+      @prob = true
+    end
+
     @role  = current_user.role.to_i
     @user  = current_user.username.to_s.capitalize
     if @role == 0 then

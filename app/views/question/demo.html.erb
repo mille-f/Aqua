@@ -1,38 +1,61 @@
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
-<div class="container">
-  <div class="row">
-    <div class="col-sm-12">対話インタフェース</div>
+<ul class="nav nav-tabs">
+  <li><a href="#create" data-toggle="tab">作問画面</a></li>
+  <li><a href="#inner" data-toggle="tab">内部処理</a></li>
+  <li><a href="#knowledge" data-toggle="tab">知識状態</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="create">
+    <br><br>
+    <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %>
+      <h4>問題文を入力してください</h4>
+      <div class="form-inline form-group">
+        <div class="form-group">
+          <%= text_field_tag('ajx[answer]', nil, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？', 'required' => '') %>
+        </div>
+        <div class="form-group">
+          <%= button_tag(type: "submit", class: "btn btn-primary") do %>
+            <i class="fa fa-search"></i> 確認
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
-  <div class="row">
-    <div class="col-sm-6">内部処理</div>
-    <div class="col-sm-6">
-      <table id='knowledge-state' border='1' class="table table-hover">
-        <thead>
-          <tr>
-            <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
-          </tr>
-        </thead>
-        <tbody>
-        <% @data.each do |datum| %>
-          <tr class=<%= @color[datum.state] %>>
-            <td><%= datum.ent %></td>
-            <td><%= datum.att %></td>
-            <td><%= datum.val %></td>
-            <td><%= @state[datum.state] %></td>
-          </tr>
-        <% end %>
-        </tbody>
-      </table>
-      <script>
-      $(document).ready(function(){
-        $('#knowledge-state').DataTable({
-          "paging": true,
-          "bProcessing": true,
-          "iDisplayLength": 5
-        });
+  <div class="tab-pane fade" id="inner">
+    <br><br>
+    <pre class="console">
+      <div id="txt"></div>
+      <div id="entity"></div>
+      <div id="attribute"></div>
+    </pre>
+  </div>
+  <div class="tab-pane fade" id="knowledge">
+    <br><br>
+    <table id='knowledge-state' border='1' class="table table-hover">
+      <thead>
+        <tr>
+          <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @data.each do |datum| %>
+        <tr class=<%= @color[datum.state] %>>
+          <td><%= datum.ent %></td>
+          <td><%= datum.att %></td>
+          <td><%= datum.val %></td>
+          <td><%= @state[datum.state] %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <script>
+    $(document).ready(function(){
+      $('#knowledge-state').DataTable({
+        "paging": true,
+        "bProcessing": true,
+        "iDisplayLength": 10
       });
-      </script>
-    </div>
+    });
+    </script>
   </div>
 </div>
