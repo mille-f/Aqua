@@ -1,11 +1,31 @@
 if (<%= @prob %>) {
-  $("#txt").html("問題文「<%= @txt %>」が入力されました。");
-  $("#entity").html("entity に <%= @e %> を設定しました。");
-  $("#attribute").html("attribute に <%= @a %> を設定しました。");
+  $("#txt").html("問題文「<%= $txt %>」が入力されました。");
+  $("#entity").html("entity に <%= $e %> を設定しました。");
+  $("#attribute").html("attribute に <%= $a %> を設定しました。");
   $("#sec").html("OK");
+  $("#prob").html('');
+  $("#tern2").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正答と誤答3つを入力してください。</font></div><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ajx2", html: {"data-parsley-validate" => "", "parsley-use-html5-constraints" => false}) do %><div class="field"><div class="col-xs-3"><%= text_field_tag('ajx2[right]', nil, class: 'form-control', placeholder: '正答', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong1]', nil, class: 'form-control', placeholder: '誤答1', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong2]', nil, class: 'form-control', placeholder: '誤答2', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong3]', nil, class: 'form-control', placeholder: '誤答3', 'required' => '') %></div><br><br><br><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %>&nbsp;&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary") do %> 作成 <% end %></div><% end %></div>');
 } else {
   $("#txt").html("問題文が正しくありません。\n\n問題を作りなおしてください。");
   $("#entity").html("");
   $("#attribute").html("");
   $("#sec").html("No");
+  $("#tern2").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文が正しくありません。 問題を作りなおしてください。</font></div>');
 }
+
+if (<%= @tern2 %>) {
+  $("#right").html("正答に <%= $right %> を設定しました。");
+  $("#wrong1").html("誤答1に <%= $wrong1 %> を設定しました。");
+  $("#wrong2").html("誤答2に <%= $wrong2 %> を設定しました。");
+  $("#wrong3").html("誤答3に <%= $wrong3 %> を設定しました。");
+}
+
+if (<%= @finish %>) {
+  $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">良い問題ですね。</font></div>');
+} else if (<%= @tern2 %>) {
+  $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">間違っています。</font></div>');
+}
+
+if (<%= @btn %>) {
+}
+

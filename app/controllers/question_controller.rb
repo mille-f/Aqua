@@ -76,10 +76,10 @@ class QuestionController < ApplicationController
     if role == 0 then
       data  = "#{user}Alkali".constantize.all
       data.each do |datum|
-        if datum.state == 0 then
+        #if datum.state == 0 then
         node.push(datum.ent)
         node.push(datum.val)
-        end
+        #end
         triad[datum.ent][datum.val] = datum.att
         state[datum.ent][datum.val] = color[datum.state]
       end
@@ -92,30 +92,69 @@ class QuestionController < ApplicationController
   def demo
     con = ActiveRecord::Base.connection
     nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
-
-    word = Array.new
     @prob = false
-    if params['ajx'].present?
-      @txt = params['ajx']['answer']
-      nm.parse(@txt) do |w|
-        if w.feature.split(',')[0] == '名詞' || w.feature.split(',')[0] == '動詞' then
-          word.push(w.surface)
-        end
-      end
-    end
-
-    @e = word[0]
-    @a = word[1]
-    unless con.select_all("select val from alkalis where ent like '#{@e}' and att like '#{@a}' and val like '%'").to_a.empty? then
-      @prob = true
-    end
-
+    @tern2 = false
+    @finish = false
     @role  = current_user.role.to_i
     @user  = current_user.username.to_s.capitalize
+
     if @role == 0 then
       @data  = "#{@user}Alkali".constantize.all
     end
     @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
+
+    node = Array.new
+    triad = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
+    state = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
+    color = {0 => "#FCF8E3", 1 => "#D9EDF7", 2 => "#F2DEDE", 3 => "#DFF0D8"}
+    @data.each do |datum|
+      #if datum.state == 0 then
+        node.push(datum.ent)
+        node.push(datum.val)
+      #end
+      triad[datum.ent][datum.val] = datum.att
+      state[datum.ent][datum.val] = color[datum.state]
+    end
+    gon.triad = triad
+    gon.state = state
+    gon.node = node.uniq!
+
+    word = Array.new
+    if params['ajx'].present?
+      $txt = params['ajx']['problem']
+      nm.parse($txt) do |w|
+        if w.feature.split(',')[0] == '名詞' || w.feature.split(',')[0] == '動詞' then
+          word.push(w.surface)
+        end
+      end
+      $e = word[0]
+      $a = word[1]
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
+        @prob = true
+      end
+    end
+
+    if params['ajx2'].present?
+      @tern2 = true
+      @prob = true
+      $right  = params['ajx2']['right']
+      $wrong1 = params['ajx2']['wrong1']
+      $wrong2 = params['ajx2']['wrong2']
+      $wrong3 = params['ajx2']['wrong3']
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+        @finish = true
+        res = "#{@user}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
+        unless res.nil?
+          res.update_attribute(:state, '1')
+        end
+      else
+        res = "#{@user}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
+        unless res.nil?
+          res.update_attribute(:state, '2')
+        end
+      end
+    end
+
   end
 end
