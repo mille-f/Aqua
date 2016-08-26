@@ -6,13 +6,16 @@ var nodes = [];
 for ( var i in gon.node ) {
   nodes.push({id: (gon.node[i]), label: (gon.node[i])});
   document.write(gon.node[i]);
+  document.write(gon.state)
 }
+  document.write("<br>");
 //nodes.push({id: 'hoge', label: 'hoge', hidden: false});
 // create an array with edges
 var edges = [];
 for (var ent in gon.triad) {
   for ( var val in gon.triad[ent] ) {
     edges.push({from: ent, to: val, label: gon.triad[ent][val]});
+    document.write(gin)
     document.write(gon.state[ent][val]+"<BR>");
   }
 }
