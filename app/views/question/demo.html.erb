@@ -7,11 +7,12 @@
 <div class="tab-content">
   <div class="tab-pane fade in active" id="create">
     <br><br>
+    <div id="dialogue">
     <div class="well">
       <%= image_tag 'pc.png', :size => '40x32', :align => 'middle' %> &nbsp;&nbsp;
       <font size="3">問題文を入力してください。</font>
     </div>
-    <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %>
+    <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %>
       <div class="well">
         <div class="form-inline form-group">
           <div class="form-group">
@@ -19,35 +20,30 @@
             <%= text_field_tag('ajx[problem]', nil, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %>
           </div>
           <div class="form-group">
-            <%= button_tag(type: "submit", class: "btn btn-primary") do %>
-              <i class="fa fa-paper-plane-o" aria-hidden="true"></i> OK
+            <%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem") do %>
+              <i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成
             <% end %>
           </div>
         </div>
       </div>
     <% end %>
-    <br>
-    <div id="tern2"></div>
+    </div>
     <div id="finish"></div>
   </div>
   <div class="tab-pane fade" id="inner">
     <br><br>
     <pre class="console">
-      <div id="txt"></div>
-      <div id="entity"></div>
-      <div id="attribute"></div>
-      <div id="right"></div>
-      <div id="wrong1"></div>
-      <div id="wrong2"></div>
-      <div id="wrong3"></div>
+      <div id="console"></div>
+      <div id="ld_e"></div>
+      <div id="ld_a"></div>
     </pre>
   </div>
   <div class="tab-pane fade" id="knowledge">
     <br><br>
-    <button type="submit", class="btn btn-primary", onclick="demo(1)"> 表形式 </button>
-    <button type="submit", class="btn btn-primary", onclick="demo(2)"> 意味ネットワーク </button><br><br>
+    <button type="submit", class="btn btn-primary", onclick="toggle(1)"> 表形式 </button>
+    <button type="submit", class="btn btn-primary", onclick="toggle(2)"> 意味ネットワーク </button><br><br>
     <script>
-function demo(id) {
+function toggle(id) {
   if ( id == 1 ) {
     $("#knowledge-table").html("<table id='knowledge-state' border='1' class='table table-hover'><thead><tr><th>entity</th><th>attribute</th><th>value</th><th>知識状態</th></tr></thead><tbody><% @data.reload.each do |datum| %><tr class=<%= @color[datum.state] %>><td><%= datum.ent %></td><td><%= datum.att %></td><td><%= datum.val %></td><td><%= @state[datum.state] %></td></tr><% end %></tbody></table><script>\$(document).ready(function(){\$('#knowledge-state').DataTable({'paging':true,'bProcessing':true,'iDisplayLength':10});});<\/script>");
     $("#semnet").html("");

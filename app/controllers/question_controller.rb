@@ -135,6 +135,23 @@ class QuestionController < ApplicationController
       end
     end
 
+    @problem = false
+    if params['problem']
+      @problem = true
+    end
+
+    @create = false
+    if params['create']
+      @create = true
+    end
+
+    @is_fix = 2
+    if params['fix_yes']
+      @is_fix = 1
+    elsif params['fix_no']
+      @is_fix = 0
+    end
+
     if params['ajx2'].present?
       @tern2 = true
       @prob = true
