@@ -8,6 +8,30 @@
   //border: 1px solid lightgrey;
 }
 
+#page-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 200%;
+}
+
+#page-top a {
+  background: #666;
+  text-decoration: none;
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  display: block;
+  border-radius: 50px;
+  line-height: 50px;
+}
+
+#page-top a:hover {
+  text-decoration: none;
+  background: #999;
+}
+
 pre.console {
   width: 90%; /*横幅を90%に制限*/
   line-height: 0.95;

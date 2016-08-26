@@ -1,22 +1,45 @@
+// 常に下にスクロールする
 $(function scroll() {
-  $('#dialogue').animate({scrollTop: $('#dialogue')[0].scrollHeight - $("#dialogue").height()}, 'slow');
-  $('#console').animate({scrollTop: $('#console')[0].scrollHeight - $("#console").height()}, 'slow');
+  $("html,body").animate({scrollTop: $("#dialogue").height()}, 1500);
 });
 
+// ページトップに戻るボタン
+$(function() {
+  var topBtn = $('#page-top');
+  topBtn.hide();
+  //スクロールが200に達したらボタン表示
+  $(window).scroll(function () {
+    if ($(this).scrollTop() > 200) {
+      topBtn.fadeIn();
+    } else {
+      topBtn.fadeOut();
+    }
+  });
+  //スクロールしてトップ
+  topBtn.click(function () {
+    $('body,html').animate({
+      scrollTop: 0
+    }, 500);
+    return false;
+  });
+});
 
-if (<%= @problem %>) {
-$("#console").append("<% @data.each do |datum| %><%= $e %> : <%= datum.ent %> = <% ld = Levenshtein.normalized_distance($e,datum.ent)%><% if (0.01..0.50).include?(ld) then %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
-$("#console").append("<% @data.each do |datum| %><%= $a %> : <%= datum.att %> = <% ld = Levenshtein.normalized_distance($a,datum.att)%><% if (0.01..0.50).include?(ld) then %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
+// 標準化されたレーベンシュタイン距離の値を表示
+if (<%= @problem %>) {  // 問題文のボタンが押されたら
+  $("#console").append("標準化されたレーベンシュタイン距離の値を計算します。<br><br>");
+  $("#console").append("<% @data.each do |datum| %><%= $e %> : <%= datum.ent %> = <% ld = Levenshtein.normalized_distance($e,datum.ent)%><% if (0.01..0.50).include?(ld) then %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
+  $("#console").append("<% @data.each do |datum| %><%= $a %> : <%= datum.att %> = <% ld = Levenshtein.normalized_distance($a,datum.att)%><% if (0.01..0.50).include?(ld) then %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
 }
 
-if (<%= @prob %>) {
-  $("#problem").prop('disabled', 'disabled');
+// 入力された問題文が正しければ、形態素解析の結果を表示
+if (<%= @prob %>) { // 問題文が正しい場合
+  $("#problem").prop('disabled', 'disabled'); // ボタンを押せなくする
   if (<%= @problem %>) {
     $("#console").append("問題文「<%= $txt %>」が入力されました。<br><br>");
     $("#console").append("entity に <%= $e %> を設定しました。<br><br>");
     $("#console").append("attribute に <%= $a %> を設定しました。<br><br>");
   }
-  if (!<%= @create %>) {
+  if (!<%= @create %>) {  //
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正答と誤答3つを入力してください。</font></div><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ajx2", html: {"data-parsley-validate" => "", "parsley-use-html5-constraints" => false}) do %><div class="field"><div class="col-xs-3"><%= text_field_tag('ajx2[right]', nil, class: 'form-control', placeholder: '正答', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong1]', nil, class: 'form-control', placeholder: '誤答1', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong2]', nil, class: 'form-control', placeholder: '誤答2', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong3]', nil, class: 'form-control', placeholder: '誤答3', 'required' => '') %></div><br><br><br><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %>&nbsp;&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "create", id: "create") do %> 作成 <% end %></div><% end %></div>');
   }
 } else {
