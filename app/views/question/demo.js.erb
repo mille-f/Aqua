@@ -7,9 +7,9 @@ $(function scroll() {
 $(function() {
   var topBtn = $('#page-top');
   topBtn.hide();
-  //スクロールが200に達したらボタン表示
+  //スクロールが100に達したらボタン表示
   $(window).scroll(function () {
-    if ($(this).scrollTop() > 200) {
+    if ($(this).scrollTop() > 100) {
       topBtn.fadeIn();
     } else {
       topBtn.fadeOut();
@@ -27,8 +27,47 @@ $(function() {
 // 標準化されたレーベンシュタイン距離の値を表示
 if (<%= @problem %>) {  // 問題文のボタンが押されたら
   $("#console").append("標準化されたレーベンシュタイン距離の値を計算します。<br><br>");
-  $("#console").append("<% @data.each do |datum| %><%= $e %> : <%= datum.ent %> = <% ld = Levenshtein.normalized_distance($e,datum.ent)%><% if (0.01..0.50).include?(ld) then %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
-  $("#console").append("<% @data.each do |datum| %><%= $a %> : <%= datum.att %> = <% ld = Levenshtein.normalized_distance($a,datum.att)%><% if (0.01..0.50).include?(ld) then %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
+  $("#console").append("<% @data.each do |datum| %><%= $e %> : <%= datum.ent %> = <% ld = Levenshtein.normalized_distance($e,datum.ent)%><% if ld == 0 then %><% @is_conf_e = true %><font color='green'><%= ld %></font><% elsif (0.01..0.50).include?(ld) then %><% @conf_e.push(datum.ent) %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
+  $("#console").append("<% @data.each do |datum| %><%= $a %> : <%= datum.att %> = <% ld = Levenshtein.normalized_distance($a,datum.att)%><% if ld == 0 then %><% @is_conf_a = true %><font color='green'><%= ld %></font><% elsif (0.01..0.50).include?(ld) then %><% @conf_a.push(datum.att) %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
+
+  <% if @is_conf_e then %><% @conf_e.clear %><% end %>
+  <% if @is_conf_a then %><% @conf_a.clear %><% end %>
+  $("#console").append("<%= @conf_e %> <%= @is_conf_e %><br><br>");
+  $("#console").append("<%= @conf_a %> <%= @is_conf_a %><br><br>");
+  if (<%= @conf_e.count %> > 0) {
+    <% @conf_e.uniq! %>
+    $("#console").append("もしかして、 <%= $e %> は <%= @conf_e.join(" か ") %> ですか？<br><br>");
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $e %> は <%= @conf_e.join(" か ") %> ですか？</font></div>');
+    $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ce") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<% @conf_e.each_with_index do |ce, i| %><%= button_tag(type: "submit", class: "btn btn-primary", name: ce, id: ce) do %> <%= ce %> <% end %>&nbsp;&nbsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "nohit", id: "nohit") do %> 該当なし <% end %><% end %></div>');
+  <% @conf_e.each do |ce| %>
+    $("#<%=ce%>").click(function(){
+      $("#console").append("entityを <%= ce %> に変更しました。<br><br>");
+      $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= $e %> を <%= ce %> に変更しました。</font></div>');
+      <% $txt = ce + "の" + $a + "は何ですか？"  %>
+      $("#dialogue").append('<%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %><div class="well"><div class="form-inline form-group"><div class="form-group"><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %> &nbsp;&nbsp;<%= text_field_tag('ajx[problem]', $txt, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %></div>&nbsp;&nbsp;<div class="form-group"><%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem", onclick: "scroll()") do %><i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成 <% end %></div></div></div> <% end %>');
+    });
+  <% end %>
+  }
+  if (<%= @conf_a.count %> > 0) {
+    <% @conf_a.uniq! %>
+    $("#console").append("もしかして、 <%= $a %> は <%= @conf_a.join(" か ") %> ですか？<br><br>");
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $a %> は <%= @conf_a.join(" か ") %> ですか？</font></div>');
+    $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ca") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<% @conf_a.each_with_index do |ca, i| %><%= button_tag(type: "submit", class: "btn btn-primary", name: ca, id: ca) do %> <%= ca %> <% end %>&nbsp;&nbsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "nohit", id: "nohit") do %> 該当なし <% end %><% end %></div>');
+  }
+  <% @conf_a.each do |ca| %>
+    $("#<%=ca%>").click(function(){
+      $("#console").append("attributeを <%= ca %> に変更しました。<br><br>");
+      $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= $a %> を <%= ca %> に変更しました。</font></div>');
+      <% $txt = $e + "の" + ca + "は何ですか？"  %>
+      $("#dialogue").append('<%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %><div class="well"><div class="form-inline form-group"><div class="form-group"><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %> &nbsp;&nbsp;<%= text_field_tag('ajx[problem]', $txt, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %></div>&nbsp;&nbsp;<div class="form-group"><%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem", onclick: "scroll()") do %><i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成 <% end %></div></div></div> <% end %>');
+    });
+  <% end %>
+}
+
+// 該当なしが選択されたら
+if (<%= @nohit %>) {
+  <% $txt = $e + "の" + $a + "は何ですか？" %>
+  $("#console").append("nohit<br><br>");
 }
 
 // 入力された問題文が正しければ、形態素解析の結果を表示
@@ -42,18 +81,18 @@ if (<%= @prob %>) { // 問題文が正しい場合
   if (!<%= @create %>) {  //
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正答と誤答3つを入力してください。</font></div><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ajx2", html: {"data-parsley-validate" => "", "parsley-use-html5-constraints" => false}) do %><div class="field"><div class="col-xs-3"><%= text_field_tag('ajx2[right]', nil, class: 'form-control', placeholder: '正答', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong1]', nil, class: 'form-control', placeholder: '誤答1', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong2]', nil, class: 'form-control', placeholder: '誤答2', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong3]', nil, class: 'form-control', placeholder: '誤答3', 'required' => '') %></div><br><br><br><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %>&nbsp;&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "create", id: "create") do %> 作成 <% end %></div><% end %></div>');
   }
-} else {
+} else {  // 問題文が正しくない場合
   $("#problem").prop('disabled', 'disabled');
-  if (<%= @problem %>) {
-  $("#console").append("問題文が正しくありません。<br>問題を作りなおしてください。<br><br>");
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文が正しくありません。 元の文章を使って問題を作り直しますか？</font></div>');
-  $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_fix") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "fix_yes", id: "fix_yes") do %> Yes <% end %>&nbsp;&nbsp<%= button_tag(type: "submit", class: "btn btn-default", name: "fix_no", id: "fix_no") do %> No <% end %><% end %></div>');
+  if ((<%= @problem %> && <%= @conf_e.count %> == 0 && <%= @conf_a.count %> == 0) || (<%= @nohit %>)) {
+    $("#console").append("問題文が正しくありません。<br>問題を作りなおしてください。<br><br>");
+    $("#dialogue").append('<div class="fix"><div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文が正しくありません。 元の文章を使って問題を作り直しますか？</font></div></div>');
+    $("#dialogue").append('<div class="fix"><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_fix") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "fix_yes", id: "fix_yes") do %> Yes <% end %>&nbsp;&nbsp<%= button_tag(type: "submit", class: "btn btn-default", name: "fix_no", id: "fix_no") do %> No <% end %><% end %></div></div>');
   }
-  if (<%= @is_fix %> == 1) {
+  if (<%= @is_fix %> == 1) {  // 元の文章を使う
     $("#fix_yes").prop('disabled', 'disabled');
     $("#fix_no").prop('disabled', 'disabled');
     $("#dialogue").append('<%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %><div class="well"><div class="form-inline form-group"><div class="form-group"><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %> &nbsp;&nbsp;<%= text_field_tag('ajx[problem]', $txt, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %></div>&nbsp;&nbsp;<div class="form-group"><%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem", onclick: "scroll()") do %><i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成 <% end %></div></div></div> <% end %>');
-  } else if (<%= @is_fix %> == 0) {
+  } else if (<%= @is_fix %> == 0) { // 元の文章を使わない
     $("#fix_yes").prop('disabled', 'disabled');
     $("#fix_no").prop('disabled', 'disabled');
     $("#dialogue").append('<%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %><div class="well"><div class="form-inline form-group"><div class="form-group"><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %> &nbsp;&nbsp;<%= text_field_tag('ajx[problem]', nil, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %></div>&nbsp;&nbsp;<div class="form-group"><%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem", onclick: "scroll()") do %><i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成 <% end %></div></div></div> <% end %>');

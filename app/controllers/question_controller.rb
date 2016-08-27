@@ -120,6 +120,7 @@ class QuestionController < ApplicationController
     gon.state = state
     gon.node = node.uniq!
 
+    # 形態素解析
     word = Array.new
     if params['ajx'].present?
       $txt = params['ajx']['problem']
@@ -135,16 +136,31 @@ class QuestionController < ApplicationController
       end
     end
 
+    # 推定機能
+    @is_conf_e = false
+    @is_conf_a = false
+    @conf_e = Array.new()
+    @conf_a = Array.new()
+
+    # 該当なしボタンが押されたかどうかの判定
+    @nohit = false
+    if params['nohit']
+      @nohit = true
+    end
+
+    # 問題文入力後、ボタンが押されたかどうかの判定
     @problem = false
     if params['problem']
       @problem = true
     end
 
+    # 正答誤答入力後、ボタンが押されたかどうかの判定
     @create = false
     if params['create']
       @create = true
     end
 
+    # 元の文章を用いて問題文を修正するかどうかの判定
     @is_fix = 2
     if params['fix_yes']
       @is_fix = 1
@@ -152,6 +168,7 @@ class QuestionController < ApplicationController
       @is_fix = 0
     end
 
+    # 正答誤答が入力されていれば
     if params['ajx2'].present?
       @tern2 = true
       @prob = true
