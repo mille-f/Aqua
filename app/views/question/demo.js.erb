@@ -39,16 +39,16 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
     $("#console").append("もしかして、 <%= $e %> は <%= @conf_e.join(" か ") %> ですか？<br><br>");
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $e %> は <%= @conf_e.join(" か ") %> ですか？</font></div>');
     $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ce") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<% @conf_e.each_with_index do |ce, i| %><%= button_tag(type: "submit", class: "btn btn-primary", name: ce, id: ce) do %> <%= ce %> <% end %>&nbsp;&nbsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "nohit", id: "nohit") do %> 該当なし <% end %><% end %></div>');
-  <% @conf_e.each do |ce| %>
-    $("#<%=ce%>").click(function(){
-      $("#console").append("entityを <%= ce %> に変更しました。<br><br>");
-      $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= $e %> を <%= ce %> に変更しました。</font></div>');
-      <% $txt = ce + "の" + $a + "は何ですか？"  %>
-      $("#dialogue").append('<%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %><div class="well"><div class="form-inline form-group"><div class="form-group"><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %> &nbsp;&nbsp;<%= text_field_tag('ajx[problem]', $txt, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %></div>&nbsp;&nbsp;<div class="form-group"><%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem", onclick: "scroll()") do %><i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成 <% end %></div></div></div> <% end %>');
-    });
-  <% end %>
+    <% @conf_e.each do |ce| %>
+      $("#<%=ce%>").click(function(){
+        $("#console").append("entityを <%= ce %> に変更しました。<br><br>");
+        $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= $e %> を <%= ce %> に変更しました。</font></div>');
+        <% $txt = ce + "の" + $a + "は何ですか？"  %>
+        $("#dialogue").append('<%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %><div class="well"><div class="form-inline form-group"><div class="form-group"><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %> &nbsp;&nbsp;<%= text_field_tag('ajx[problem]', $txt, size: '60', class: 'form-control', placeholder: '例） X の Y は何ですか？') %></div>&nbsp;&nbsp;<div class="form-group"><%= button_tag(type: "submit", class: "btn btn-primary", id: "problem", name: "problem", onclick: "scroll()") do %><i class="fa fa-paper-plane-o" aria-hidden="true"></i> 作成 <% end %></div></div></div> <% end %>');
+      });
+    <% end %>
   }
-  if (<%= @conf_a.count %> > 0) {
+  if ((<%= @conf_a.count %> > 0) && <%= @is_conf_e %>) {
     <% @conf_a.uniq! %>
     $("#console").append("もしかして、 <%= $a %> は <%= @conf_a.join(" か ") %> ですか？<br><br>");
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $a %> は <%= @conf_a.join(" か ") %> ですか？</font></div>');
