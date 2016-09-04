@@ -64,6 +64,10 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
   <% end %>
 }
 
+if (<%= @transition%>) {  // 作問できませんが入力された場合
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">今回は、作問のデモしか用意していません。</font></div>');
+}
+
 // 該当なしが選択されたら
 if (<%= @nohit %>) {
   <% $txt = $e + "の" + $a + "は何ですか？" %>
@@ -71,22 +75,23 @@ if (<%= @nohit %>) {
 }
 
 // 入力された問題文が正しければ、形態素解析の結果を表示
-if (<%= @prob %>) { // 問題文が正しい場合
+if (<%= @prob %>) { // 問題文が入力
   $("#problem").prop('disabled', 'disabled'); // ボタンを押せなくする
   if (<%= @problem %>) {
     $("#console").append("問題文「<%= $txt %>」が入力されました。<br><br>");
     $("#console").append("entity に <%= $e %> を設定しました。<br><br>");
     $("#console").append("attribute に <%= $a %> を設定しました。<br><br>");
   }
-  if (!<%= @create %>) {  //
+  if (!<%= @create %> && !<%= @transition %>) {  // 問題文が正しい場合
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">入力された問題文を正しいと判断しました。</font></div>');
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正答と誤答3つを入力してください。</font></div><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ajx2", html: {"data-parsley-validate" => "", "parsley-use-html5-constraints" => false}) do %><div class="field"><div class="col-xs-3"><%= text_field_tag('ajx2[right]', nil, class: 'form-control', placeholder: '正答', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong1]', nil, class: 'form-control', placeholder: '誤答1', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong2]', nil, class: 'form-control', placeholder: '誤答2', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong3]', nil, class: 'form-control', placeholder: '誤答3', 'required' => '') %></div><br><br><br><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %>&nbsp;&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "create", id: "create") do %> 作成 <% end %></div><% end %></div>');
   }
-} else {  // 問題文が正しくない場合
+} else if (!<%= @transition %>) { // 問題文が正しくない場合
   $("#problem").prop('disabled', 'disabled');
   if ((<%= @problem %> && <%= @conf_e.count %> == 0 && <%= @conf_a.count %> == 0) || (<%= @nohit %>)) {
     $("#console").append("問題文が正しくありません。<br>問題を作りなおしてください。<br><br>");
     $("#dialogue").append('<div class="fix"><div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文が正しくありません。 元の文章を使って問題を作り直しますか？</font></div></div>');
-    $("#dialogue").append('<div class="fix"><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_fix") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "fix_yes", id: "fix_yes") do %> Yes <% end %>&nbsp;&nbsp<%= button_tag(type: "submit", class: "btn btn-default", name: "fix_no", id: "fix_no") do %> No <% end %><% end %></div></div>');
+    $("#dialogue").append('<div class="fix"><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_fix") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "fix_yes", id: "fix_yes") do %> Yes <% end %>&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-default", name: "fix_no", id: "fix_no") do %> No <% end %><% end %></div></div>');
   }
   if (<%= @is_fix %> == 1) {  // 元の文章を使う
     $("#fix_yes").prop('disabled', 'disabled');
@@ -108,6 +113,7 @@ if (<%= @tern2 %>) {
 }
 
 if (<%= @finish %>) {
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文:&nbsp;&nbsp;<b><%= $txt %></b><br>　　　&nbsp;正答:&nbsp;&nbsp;<b><%= $right %></b>&nbsp;&nbsp;&nbsp;誤答1:&nbsp;&nbsp;<b><%= $wrong1 %></b>&nbsp;&nbsp;&nbsp;誤答2:&nbsp;&nbsp;<b><%= $wrong2 %></b>&nbsp;&nbsp;&nbsp;誤答3:&nbsp;&nbsp;<b><%= $wrong3 %></b><br><br>　　　&nbsp;上記の問題がASQに登録されました。</font></div>');
   $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">良い問題ですね。</font></div>');
 } else if (<%= @tern2 %>) {
   $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">間違っています。</font></div>');

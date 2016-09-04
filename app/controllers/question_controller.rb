@@ -97,6 +97,7 @@ class QuestionController < ApplicationController
     @finish = false
     @role  = current_user.role.to_i
     @user  = current_user.username.to_s.capitalize
+    @transition = false # 作問フェーズからの離脱
 
     if @role == 0 then
       @data  = "#{@user}Alkali".constantize.all
@@ -124,6 +125,9 @@ class QuestionController < ApplicationController
     word = Array.new
     if params['ajx'].present?
       $txt = params['ajx']['problem']
+      if $txt.include?("作問できません")
+        @transition = true
+      end
       nm.parse($txt) do |w|
         if w.feature.split(',')[0] == '名詞' || w.feature.split(',')[0] == '動詞' then
           word.push(w.surface)
@@ -166,6 +170,14 @@ class QuestionController < ApplicationController
       @is_fix = 1
     elsif params['fix_no']
       @is_fix = 0
+    end
+
+    # 知識状態のリセット
+    if params['reset']
+      data = "#{@user}Alkali".constantize.all
+      data.each do |datum|
+        datum.update_attribute(:state, '0')
+      end
     end
 
     # 正答誤答が入力されていれば

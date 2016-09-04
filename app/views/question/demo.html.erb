@@ -43,7 +43,11 @@
   <div class="tab-pane fade" id="knowledge">
     <br><br>
     <button type="submit", class="btn btn-primary", onclick="toggle(1)"> 表形式 </button>
-    <button type="submit", class="btn btn-primary", onclick="toggle(2)"> 意味ネットワーク </button><br><br>
+    <button type="submit", class="btn btn-primary", onclick="toggle(2)"> 意味ネットワーク </button>
+    <div align="right">
+      <%= form_for("demo", :method => :post, :remote => true, :id => "reset", :data => { :confirm => '本当にリセットしますか？'}) do %><%= button_tag(type: "submit", class: "btn btn-danger", name: "reset", id: "reset") do %> リセット <% end %><% end %>
+    </div>
+    <br><br>
     <script>
 function toggle(id) {
   if ( id == 1 ) {
