@@ -180,6 +180,10 @@ class QuestionController < ApplicationController
       end
     end
 
+    @right_error = false
+    @wrong1_error = false
+    @wrong2_error = false
+    @wrong3_error = false
     # 正答誤答が入力されていれば
     if params['ajx2'].present?
       @tern2 = true
@@ -188,7 +192,26 @@ class QuestionController < ApplicationController
       $wrong1 = params['ajx2']['wrong1']
       $wrong2 = params['ajx2']['wrong2']
       $wrong3 = params['ajx2']['wrong3']
-      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+
+      # 正答が正しくない場合
+      if con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+        @right_error = true
+        @correct = con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
+      end
+      # 誤答1が正しくない場合
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
+        @wrong1_error = true
+      end
+      # 誤答2が正しくない場合
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
+        @wrong2_error = true
+      end
+      # 誤答3が正しくない場合
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
+        @wrong3_error = true
+      end
+
+      if !@right_error && !@wrong1_error && !@wrong2_error && !@wrong3_error then
         @finish = true
         res = "#{@user}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
         unless res.nil?

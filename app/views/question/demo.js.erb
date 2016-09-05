@@ -116,6 +116,17 @@ if (<%= @finish %>) {
   $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文:&nbsp;&nbsp;<b><%= $txt %></b><br>　　　&nbsp;正答:&nbsp;&nbsp;<b><%= $right %></b>&nbsp;&nbsp;&nbsp;誤答1:&nbsp;&nbsp;<b><%= $wrong1 %></b>&nbsp;&nbsp;&nbsp;誤答2:&nbsp;&nbsp;<b><%= $wrong2 %></b>&nbsp;&nbsp;&nbsp;誤答3:&nbsp;&nbsp;<b><%= $wrong3 %></b><br><br>　　　&nbsp;上記の問題がASQに登録されました。</font></div>');
   $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">良い問題ですね。</font></div>');
 } else if (<%= @tern2 %>) {
-  $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">間違っています。</font></div>');
+  if (<%= @right_error %>) {
+    $("#finish").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正答が間違っています。　正しくは、 <%= $e %> の <%= $a %> は <%= @correct %> です。</font></div>');
+  }
+  if (<%= @wrong1_error %>) {
+    $("#finish").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答1が間違っています。　「<%= $e %> の <%= $a %> は <%= $wrong1 %>」 は正しいです。</font></div>');
+  }
+  if (<%= @wrong2_error %>) {
+    $("#finish").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答2が間違っています。　「<%= $e %> の <%= $a %> は <%= $wrong2 %>」 は正しいです。</font></div>');
+  }
+  if (<%= @wrong3_error %>) {
+    $("#finish").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答3が間違っています。　「<%= $e %> の <%= $a %> は <%= $wrong3 %>」 は正しいです。</font></div>');
+  }
 }
 
