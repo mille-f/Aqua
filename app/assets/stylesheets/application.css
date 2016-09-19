@@ -14,4 +14,7 @@
  *= require_self
  *= require font-awesome
  *= require vis
+ *= require jquery.steps
+ *= require parsley
+ *= require datatables
  */

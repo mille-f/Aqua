@@ -3,3 +3,7 @@
 
 # asset 'bootstrap'
 asset 'vis'
+asset 'jquery.steps'
+#asset 'bootstrapValidator'
+asset 'jquery.validation'
+asset 'datatables'

@@ -16,6 +16,9 @@
     "tests"
   ],
   "dependencies": {
-    "vis": "^4.16.1"
+    "vis": "^4.16.1",
+    "datatables.net": "^1.10.12",
+    "datatables.net-bs": "^1.10.12",
+    "jquery.steps": "^1.1.0"
   }
 }

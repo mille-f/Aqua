@@ -5,5 +5,46 @@
 #semnet {
   width:  800px;
   height: 600px;
-  border: 1px solid lightgrey;
+  //border: 1px solid lightgrey;
+}
+
+#page-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 200%;
+}
+
+#page-top a {
+  background: #666;
+  text-decoration: none;
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  display: block;
+  border-radius: 50px;
+  line-height: 50px;
+}
+
+#page-top a:hover {
+  text-decoration: none;
+  background: #999;
+}
+
+pre.console {
+  width: 90%; /*横幅を90%に制限*/
+  line-height: 0.95;
+  padding: 10px 15px; /* 内側の余白（横 縦） */
+  margin: 5px 10px; /* 外側の余白(横 縦) */
+  //background-color: #fff;
+  //color: green;
+  border-top: 2px solid gray; /* 縁取り(solid=棒) */
+  border-left: 2px solid gray; /* 縁取り */
+  border-right: 2px solid silver; /* 縁取り */
+  border-bottom: 2px solid silver; /* 縁取り */
+  max-height: 30em;
+  overflow:auto;
+  font-size: 16px;
+  font-family:"Courier New",Courier,sans-serif;
 }

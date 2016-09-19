@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get 'question/create'
   get 'question/list' => 'question#list'
   get 'question/semnet' => 'question#semnet'
+  #get 'question/demo' => 'question#demo'
+  match 'question/demo', as: 'demo', to: 'question#demo', via: [:get, :post]
 
   root 'home#top'
   get '/show' => 'home#show'
