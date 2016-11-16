@@ -140,6 +140,20 @@ class QuestionController < ApplicationController
       end
     end
 
+    # ドリル＆プラクティス
+    @choices = Array.new()
+    @data.each do |datum|
+      if datum.att == "炎色反応" then
+        @choices.push(datum.val)
+      end
+    end
+
+    # パスをするが押されたかどうかの判定
+    @is_pass = false
+    if params['pass']
+      @is_pass = true
+    end
+
     # 推定機能
     @is_conf_e = false
     @is_conf_a = false

@@ -64,8 +64,20 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
   <% end %>
 }
 
-if (<%= @transition%>) {  // 作問できませんが入力された場合
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">今回は、作問のデモしか用意していません。</font></div>');
+// 作問できませんが入力された場合
+if (<%= @transition%>) {
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">では、XXの問題を解いてみましょう。</font></div>');
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">次の質問に答えなさい。<br>&emsp;&emsp;&emsp;&nbsp;カリウムの炎色反応は何色ですか？</font></div>');
+  $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ca") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<% @choices.each_with_index do |ca, i| %><%= button_tag(type: "submit", class: "btn btn-primary", name: ca, id: ca) do %> <%= ca %> <% end %>&nbsp;&nbsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "pass", id: "pass") do %> パスをする <% end %><% end %></div>');
+}
+
+<% if params["赤紫色"] %>
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正解です。</font></div>');
+<% end %>
+
+// パスをするが選択されたら
+if (<%= @is_pass %>) {
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">では、YYの問題を解いてみましょう。</font></div>');
 }
 
 // 該当なしが選択されたら

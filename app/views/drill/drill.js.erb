@@ -1,0 +1,31 @@
+// 常に下にスクロールする
+$(function scroll() {
+  $("html,body").animate({scrollTop: $("#dialogue").height()}, 1500);
+});
+
+// ページトップに戻るボタン
+$(function() {
+  var topBtn = $('#page-top');
+  topBtn.hide();
+  //スクロールが100に達したらボタン表示
+  $(window).scroll(function () {
+    if ($(this).scrollTop() > 100) {
+      topBtn.fadeIn();
+    } else {
+      topBtn.fadeOut();
+    }
+  });
+  //スクロールしてトップ
+  topBtn.click(function () {
+    $('body,html').animate({
+      scrollTop: 0
+    }, 500);
+    return false;
+  });
+});
+
+
+<% while @cnt <= 20 %>
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第<%= @cnt %>問<br>&emsp;&emsp;&emsp;&nbsp;カリウムの炎色反応は何色ですか？</font></div>');
+<% end %>
+

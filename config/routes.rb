@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   #get 'question/demo' => 'question#demo'
   match 'question/demo', as: 'demo', to: 'question#demo', via: [:get, :post]
 
+  get 'drill/drill' => 'drill#drill'
+  match 'drill/drill', as: 'drill', to: 'drill#drill', via: [:get, :post]
+
   root 'home#top'
   get '/show' => 'home#show'
   get '/about' => 'home#about'
