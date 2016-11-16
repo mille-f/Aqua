@@ -24,8 +24,9 @@ $(function() {
   });
 });
 
-
-<% while @cnt <= 20 %>
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第<%= @cnt %>問<br>&emsp;&emsp;&emsp;&nbsp;カリウムの炎色反応は何色ですか？</font></div>');
-<% end %>
+if ( <%= @is_hit %>  ) {
+  <% @set.each.with_index(2) do |num,i| %>
+      $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第<%= i %>問<br>&emsp;&emsp;&emsp;&nbsp;<%= @base.find(num).ent %>の<%= @base.find(num).att %>は何ですか？</font></div>');
+  <% end %>
+}
 
