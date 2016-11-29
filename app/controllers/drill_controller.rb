@@ -5,8 +5,13 @@ class DrillController < ApplicationController
     @user  = current_user.username.to_s.capitalize
     @base  = "#{@user}Alkali".constantize
     @finish = false
-    @@cnt = 0
-    @question = []
+    @max = 20
+    @question = Array.new()
+    @erratum = { -1 => "danger", 0 => "default", 1 => "success" }
+    gon.cnt = 1
+    gon.res = Array.new(@max, 0)
+    @result = gon.res #Array.new(@max, 0)
+
 
     if @role == 0 then
       @data  = @base.all
@@ -21,24 +26,16 @@ class DrillController < ApplicationController
     #end
 
     num = rand(1..@size)
-    text = @base.find(num).ent + "の" + @base.find(num).att + "は何ですか？"
-    right = @base.find(num).val
-    @question << [text, right, "hoge", "foo", "bar"]
+    @prob = @base.find(num).ent + "の" + @base.find(num).att + "は何ですか？"
+    @right = @base.find(num).val
+    @w1 = @base.find(num%5+3).val
+    @w2 = @base.find(num%5+2).val
+    @w3 = @base.find(num%5+1).val
 
-    @is_start = false
-    if params['start'] then
-      @is_start = true
-    end
-
-    @is_push = false
-    if params['pass'] then
-      @is_push = true
-    end
-
-    @is_right = false
-    if params['right'] then
-      @is_right = true
-    end
+    @question << @right
+    @question << @w1
+    @question << @w2
+    @question << @w3
 
   end
 end

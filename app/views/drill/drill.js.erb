@@ -24,19 +24,77 @@ $(function() {
   });
 });
 
-function quiz() {
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第<%= @@cnt + 1 %>問 &emsp;<%= @question[0][0] %></font></div>');
-  $("#dialogue").append('<div class="well"><%= form_for("drill", :method => :post, :remote => true, :id => "select") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "right", id: "right") do %> <%= @question[0][1] %> <% end %>&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-default", name: "pass", id: "pass") do %> パスをする <% end %><% end %></div>');
-  <% @@cnt += 1 %>
+// スタート
+<% if params['start'] then %>
+  quiz();
+<% end %>
+
+
+function debug() {
+  //alert(gon.res)
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= @question %> <%= @right %> <%= @result %></font></div>');
 };
 
-if ( <%= @is_start %>  ) {
-  quiz();
-}
+// 問題
+function quiz() {
+  debug();
+  $("#dialogue").append('<div class="well"><div class="progress-bar progress-bar-info" role="progressbar" style="width:' + (gon.cnt*100/<%= @max %>) + '%;">' + (gon.cnt) + '/ <%= @max %></div><br><% @result.each.with_index(1) do |res, i| %><div class="label label-<%= @erratum[res] %>"><%= i %></div>&nbsp;<% end %><br><br><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第' + (gon.cnt) + '問 &emsp;<%= @prob %></font></div>');
+  $("#dialogue").append('<div class="well"><%= form_for("drill", :method => :post, :remote => true, :id => "select") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &emsp;<% @question.shuffle.each do |val| %><%= button_tag(type: "submit", class: "btn btn-primary", name: val, id: val) do %> <%= val %> <% end %>&emsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "pass", id: "pass") do %> パスをする <% end %><% end %></div>');
 
-if ( <%= @is_right %> ) {
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正解です。</font></div>');
-  if ( <%= @@cnt <= 20 %>  ) {
+  <% @question.each do |val| %>
+    $("#<%= val %>").click(function(){
+      if ( <%= val %> == <%= @right %> ) {
+        gon.res[gon.cnt-1] = 1;
+        $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正解です。次の問題に進みましょう。</font></div>');
+        $("#dialogue").append('<div class="well"><%= form_for("drill", :method => :post, :remote => true, :id => "start") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "ok", id: "ok") do %> OK <% end %><% end %></div>');
+      } else {
+        gon.res[gon.cnt-1] = -1;
+        $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">違います。正解は、<%= @right %>です。</font></div>');
+        $("#dialogue").append('<div class="well"><%= form_for("drill", :method => :post, :remote => true, :id => "start") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "ok", id: "ok") do %> OK <% end %><% end %></div>');
+      }
+    });
+  <% end %>
+};
+/*
+$(function(){
+  $("#<%= @right %>").click(function(){
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正解です。次の問題に進みましょう。</font></div>');
+    //$("#dialogue").append('<div class="well"><%= form_for("drill", :method => :post, :remote => true, :id => "start") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "ok", id: "ok") do %> OK <% end %><% end %></div>');
+    next();
+  });
+  $("#<%= @w1 %>").click(function(){
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答1 正解は、<%= @right %>です。</font></div>');
+    //$("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= @right %> <%= @w1 %> <%= @w2 %> <%= @w3 %></font></div>');
+    next();
+  });
+  $("#<%= @w2 %>").click(function(){
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答2 正解は、<%= @right %>です。</font></div>');
+    //$("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= @right %> <%= @w1 %> <%= @w2 %> <%= @w3 %></font></div>');
+    next();
+  });
+  $("#<%= @w3 %>").click(function(){
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答3 正解は、<%= @right %>です。</font></div>');
+    //$("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= @right %> <%= @w1 %> <%= @w2 %> <%= @w3 %></font></div>');
+    next();
+  });
+});
+*/
+// 次の問題
+function next() {
+  gon.cnt += 1;
+  if (gon.cnt <= 20) {
     quiz();
+  } else if (gon.cnt > 20 ) {
+    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">お疲れ様でした。ドリル&プラクティスを終了します。</font></div>');
   }
-}
+};
+
+// OK
+<% if params['ok'] then %>
+  next();
+<% end %>
+
+// パス
+<% if params['pass'] then %>
+  next();
+<% end %>
