@@ -7,10 +7,9 @@ class DrillController < ApplicationController
     @finish = false
     @max = 20
     @question = Array.new()
-    @erratum = { -1 => "danger", 0 => "default", 1 => "success" }
     gon.cnt = 1
-    gon.res = Array.new(@max, 0)
-    @result = gon.res #Array.new(@max, 0)
+    gon.res ||= Array.new(@max, 0)
+    gon.erratum = { -1 => "danger", 0 => "default", 1 => "success" }
 
 
     if @role == 0 then
