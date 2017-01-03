@@ -60,7 +60,9 @@ class QuestionController < ApplicationController
     @role  = current_user.role.to_i
     @user  = current_user.username.to_s.capitalize
     if @role == 0 then
-      @data  = "#{@user}Alkali".constantize.all
+      @data = "#{@user}Alkali".constantize.all
+    elsif @role == 1 then
+      @data = QuestionAlkali.all
     end
     @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
@@ -231,6 +233,8 @@ class QuestionController < ApplicationController
         unless res.nil?
           res.update_attribute(:state, '1')
         end
+        question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author: @user.downcase)
+        question.save
       else
         res = "#{@user}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
         unless res.nil?
