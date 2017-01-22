@@ -144,6 +144,15 @@ class QuestionController < ApplicationController
       end
     end
 
+    # 別名定義
+    @has_alias = false # 別名定義が存在するかのフラグ
+    terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
+    terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
+    if !terms1.empty? && terms2.empty? then
+      @alias_def = terms1[0].fetch("ent")
+      @has_alias = true
+    end
+
     # ドリル＆プラクティス
     @choices = Array.new()
     @data.each do |datum|

@@ -30,6 +30,13 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
   $("#console").append("<% @data.each do |datum| %><%= $e %> : <%= datum.ent %> = <% ld = Levenshtein.normalized_distance($e,datum.ent)%><% if ld == 0 then %><% @is_conf_e = true %><font color='green'><%= ld %></font><% elsif (0.01..0.50).include?(ld) then %><% @conf_e.push(datum.ent) %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
   $("#console").append("<% @data.each do |datum| %><%= $a %> : <%= datum.att %> = <% ld = Levenshtein.normalized_distance($a,datum.att)%><% if ld == 0 then %><% @is_conf_a = true %><font color='green'><%= ld %></font><% elsif (0.01..0.50).include?(ld) then %><% @conf_a.push(datum.att) %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
 
+  // 別名定義
+  if (<%= @has_alias %>) {  // 別名定義が存在する場合
+    <% @conf_e.push(@alias_def) %>
+    $("#console").append("別名定義:<%= $e %>の別名は<%= @alias_def %><br><br>");
+  }
+
+
   <% if @is_conf_e then %><% @conf_e.clear %><% end %>
   <% if @is_conf_a then %><% @conf_a.clear %><% end %>
   $("#console").append("<%= @conf_e %> <%= @is_conf_e %><br><br>");
@@ -141,4 +148,3 @@ if (<%= @finish %>) {
     $("#finish").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">誤答3が間違っています。　「<%= $e %> の <%= $a %> は <%= $wrong3 %>」 は正しいです。</font></div>');
   }
 }
-
