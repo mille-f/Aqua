@@ -38,9 +38,9 @@ function debug() {
 function quiz() {
   //debug();
   for (var i = 0; i < gon.res.length; i++) {
-    $("#dialogue").append('<div class="label label-'+ gon.erratum[gon.res[i]] +'">'+ (i+1) + '</div>&nbsp;');
+    $("#dialogue").append('<div class="label label-'+ gon.erratum[gon.res[i]] +'"><a href="#q' + (i+1) + '" style="color:#fff; text-decoration:none">'+ (i+1) + '</a></div>&nbsp;');
   }
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第' + (gon.cnt) + '問 &emsp;<%= @prob %></font></div>');
+  $("#dialogue").append('<div class="well"><div id=q' + (gon.cnt) + '><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">第' + (gon.cnt) + '問 &emsp;<%= @prob %></font></div></div>');
   $("#dialogue").append('<div class="well"><%= form_for("drill", :method => :post, :remote => true, :id => "select") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &emsp;<% @question.shuffle.each do |val| %><%= button_tag(type: "submit", class: "btn btn-primary", name: val, id: val) do %> <%= val %> <% end %>&emsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "pass", id: "pass") do %> パスをする <% end %><% end %></div>');
 
   <% @question.each do |val| %>
@@ -82,4 +82,3 @@ function next() {
   gon.res[gon.cnt-1] = 2;
   next();
 <% end %>
-
