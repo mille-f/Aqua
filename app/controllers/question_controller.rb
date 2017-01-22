@@ -58,9 +58,10 @@ class QuestionController < ApplicationController
 
   def list
     @role  = current_user.role.to_i
-    @user  = current_user.username.to_s.capitalize
+    @user  = current_user.username.to_s
+    @user_id = current_user.id
     if @role == 0 then
-      @data = "#{@user}Alkali".constantize.all
+      @data = QuestionAlkali.where(author_id: @user_id)
     elsif @role == 1 then
       @data = QuestionAlkali.all
     end
@@ -98,11 +99,12 @@ class QuestionController < ApplicationController
     @tern2 = false
     @finish = false
     @role  = current_user.role.to_i
-    @user  = current_user.username.to_s.capitalize
+    @user_id = current_user.id
+    @user  = current_user.username.to_s
     @transition = false # 作問フェーズからの離脱
 
     if @role == 0 then
-      @data  = "#{@user}Alkali".constantize.all
+      @data  = "#{@user.capitalize}Alkali".constantize.all
     end
     @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
@@ -190,7 +192,7 @@ class QuestionController < ApplicationController
 
     # 知識状態のリセット
     if params['reset']
-      data = "#{@user}Alkali".constantize.all
+      data = "#{@user.capitalize}Alkali".constantize.all
       data.each do |datum|
         datum.update_attribute(:state, '0')
       end
@@ -229,14 +231,14 @@ class QuestionController < ApplicationController
 
       if !@right_error && !@wrong1_error && !@wrong2_error && !@wrong3_error then
         @finish = true
-        res = "#{@user}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
+        res = "#{@user.capitalize}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
         unless res.nil?
           res.update_attribute(:state, '1')
         end
-        question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author: @user.downcase)
+        question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
         question.save
       else
-        res = "#{@user}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
+        res = "#{@user.capitalize}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
         unless res.nil?
           res.update_attribute(:state, '2')
         end
