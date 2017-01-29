@@ -36,12 +36,14 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
     $("#console").append("別名定義:<%= $e %>の別名は<%= @alias_def %><br><br>");
   }
 
-
   <% if @is_conf_e then %><% @conf_e.clear %><% end %>
   <% if @is_conf_a then %><% @conf_a.clear %><% end %>
   $("#console").append("<%= @conf_e %> <%= @is_conf_e %><br><br>");
   $("#console").append("<%= @conf_a %> <%= @is_conf_a %><br><br>");
-  if (<%= @conf_e.count %> > 0) {
+
+// entityの推定
+  if ((<%= @conf_e.count %> > 0)) {
+    <% @conf_e.compact! %> // nilを除外
     <% @conf_e.uniq! %>
     $("#console").append("もしかして、 <%= $e %> は <%= @conf_e.join(" か ") %> ですか？<br><br>");
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $e %> は <%= @conf_e.join(" か ") %> ですか？</font></div>');
@@ -55,7 +57,9 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
       });
     <% end %>
   }
+// attributeの推定
   if ((<%= @conf_a.count %> > 0) && <%= @is_conf_e %>) {
+    <% @conf_a.compact! %> // nilを除外
     <% @conf_a.uniq! %>
     $("#console").append("もしかして、 <%= $a %> は <%= @conf_a.join(" か ") %> ですか？<br><br>");
     $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $a %> は <%= @conf_a.join(" か ") %> ですか？</font></div>');

@@ -135,12 +135,23 @@ class QuestionController < ApplicationController
         @transition = true
       end
       nm.parse($txt) do |w|
-        if w.feature.split(',')[0] == '名詞' || w.feature.split(',')[0] == '動詞' then
-          word.push(w.surface)
+        word.push(w.surface)
+        if w.surface == 'の' then
+          word.pop
+          $e = word.join
+          word.clear
         end
+        if w.surface == 'は' then
+          word.pop
+          $a = word.join
+          word.clear
+        end
+        #if w.feature.split(',')[0] == '名詞' || w.feature.split(',')[0] == '動詞' then
+          #word.push(w.surface)
+        #end
       end
-      $e = word[0]
-      $a = word[1]
+      #$e = word[0]
+      #$a = word[1]
       #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
       unless con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
         @prob = true
@@ -149,8 +160,10 @@ class QuestionController < ApplicationController
 
     # 別名定義
     @has_alias = false # 別名定義が存在するかのフラグ
-    terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
-    terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
+    #terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
+    terms1 = con.select_all("select ent from cs1s where ent like '%' and att like '別名' and val like '#{$e}'").to_a
+    #terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
+    terms2 = con.select_all("select val from cs1s where ent like '#{$e}' and att like '別名' and val like '%'").to_a
     if !terms1.empty? && terms2.empty? then
       @alias_def = terms1[0].fetch("ent")
       @has_alias = true
