@@ -94,7 +94,8 @@ class QuestionController < ApplicationController
 
   def demo
     con = ActiveRecord::Base.connection
-    nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
+    #nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
+    nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/cs1.dic")
     @prob = false
     @tern2 = false
     @finish = false
@@ -104,8 +105,8 @@ class QuestionController < ApplicationController
     @transition = false # 作問フェーズからの離脱
 
     if @role == 0 then
-      @data  = "#{@user.capitalize}Alkali".constantize.all
-      #@data  = "#{@user.capitalize}Cs1".constantize.all
+      #@data  = "#{@user.capitalize}Alkali".constantize.all
+      @data  = "#{@user.capitalize}Cs1".constantize.all
     end
     @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
@@ -140,7 +141,8 @@ class QuestionController < ApplicationController
       end
       $e = word[0]
       $a = word[1]
-      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
+      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
+      unless con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
         @prob = true
       end
     end
@@ -202,8 +204,8 @@ class QuestionController < ApplicationController
 
     # 知識状態のリセット
     if params['reset']
-      data = "#{@user.capitalize}Alkali".constantize.all
-      #data = "#{@user.capitalize}Cs1".constantize.all
+      #data = "#{@user.capitalize}Alkali".constantize.all
+      data = "#{@user.capitalize}Cs1".constantize.all
       data.each do |datum|
         datum.update_attribute(:state, '0')
       end
@@ -223,33 +225,41 @@ class QuestionController < ApplicationController
       $wrong3 = params['ajx2']['wrong3']
 
       # 正答が正しくない場合
-      if con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+      #if con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+      if con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
         @right_error = true
-        @correct = con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
+        #@correct = con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
+        @correct = con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
       end
       # 誤答1が正しくない場合
-      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
+      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
+      unless con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
         @wrong1_error = true
       end
       # 誤答2が正しくない場合
-      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
+      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
+      unless con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
         @wrong2_error = true
       end
       # 誤答3が正しくない場合
-      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
+      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
+      unless con.select_all("select val from cs1s where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
         @wrong3_error = true
       end
 
       if !@right_error && !@wrong1_error && !@wrong2_error && !@wrong3_error then
         @finish = true
         res = "#{@user.capitalize}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
+        #res = "#{@user.capitalize}Cs1".constantize.find_by(ent: "#{$e}", att: "#{$a}")
         unless res.nil?
           res.update_attribute(:state, '1')
         end
-        question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
+        #question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
+        question = QuestionCs1.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
         question.save
       else
         res = "#{@user.capitalize}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
+        #res = "#{@user.capitalize}Cs1".constantize.find_by(ent: "#{$e}", att: "#{$a}")
         unless res.nil?
           res.update_attribute(:state, '2')
         end
