@@ -105,6 +105,7 @@ class QuestionController < ApplicationController
 
     if @role == 0 then
       @data  = "#{@user.capitalize}Alkali".constantize.all
+      #@data  = "#{@user.capitalize}Cs1".constantize.all
     end
     @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
@@ -202,6 +203,7 @@ class QuestionController < ApplicationController
     # 知識状態のリセット
     if params['reset']
       data = "#{@user.capitalize}Alkali".constantize.all
+      #data = "#{@user.capitalize}Cs1".constantize.all
       data.each do |datum|
         datum.update_attribute(:state, '0')
       end
