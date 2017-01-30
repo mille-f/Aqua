@@ -103,6 +103,14 @@ class QuestionController < ApplicationController
     @user_id = current_user.id
     @user  = current_user.username.to_s
     @transition = false # 作問フェーズからの離脱
+    # 推定機能
+    @is_conf_e = false
+    @is_conf_a = false
+    @is_conf_r = false
+    @conf_e = Array.new()
+    @conf_a = Array.new()
+    @conf_r = Array.new()
+
 
     if @role == 0 then
       #@data  = "#{@user.capitalize}Alkali".constantize.all
@@ -126,6 +134,7 @@ class QuestionController < ApplicationController
     gon.triad = triad
     gon.state = state
     gon.node = node.uniq!
+    gon.cnt = 0
 
     # 形態素解析
     word = Array.new
@@ -160,13 +169,22 @@ class QuestionController < ApplicationController
 
     # 別名定義
     @has_alias = false # 別名定義が存在するかのフラグ
-    #terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
-    terms1 = con.select_all("select ent from cs1s where ent like '%' and att like '別名' and val like '#{$e}'").to_a
-    #terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
-    terms2 = con.select_all("select val from cs1s where ent like '#{$e}' and att like '別名' and val like '%'").to_a
+      #terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
+      terms1 = con.select_all("select ent from cs1s where ent like '%' and att like '別名' and val like '#{$e}'").to_a
+      #terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
+      terms2 = con.select_all("select val from cs1s where ent like '#{$e}' and att like '別名' and val like '%'").to_a
     if !terms1.empty? && terms2.empty? then
       @alias_def = terms1[0].fetch("ent")
       @has_alias = true
+    end
+
+    # 別名定義(正答)
+    @has_alias_r = false # 別名定義が存在するかのフラグ
+      terms1 = con.select_all("select ent from cs1s where ent like '%' and att like '別名' and val like '#{$right}'").to_a
+      terms2 = con.select_all("select val from cs1s where ent like '#{$right}' and att like '別名' and val like '%'").to_a
+    if !terms1.empty? && terms2.empty? then
+      #@conf_r.push(terms1[0].fetch("ent"))
+      @has_alias_r = true
     end
 
     # ドリル＆プラクティス
@@ -183,16 +201,15 @@ class QuestionController < ApplicationController
       @is_pass = true
     end
 
-    # 推定機能
-    @is_conf_e = false
-    @is_conf_a = false
-    @conf_e = Array.new()
-    @conf_a = Array.new()
-
     # 該当なしボタンが押されたかどうかの判定
     @nohit = false
     if params['nohit']
       @nohit = true
+    end
+
+    @nohit_r = false
+    if params['nohit_r']
+      @nohit_r = true
     end
 
     # 問題文入力後、ボタンが押されたかどうかの判定
@@ -205,6 +222,7 @@ class QuestionController < ApplicationController
     @create = false
     if params['create']
       @create = true
+      @tern2 = true
     end
 
     # 元の文章を用いて問題文を修正するかどうかの判定
