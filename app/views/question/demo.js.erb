@@ -33,14 +33,14 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
 
   // 別名定義
   if (<%= @has_alias %>) {  // 別名定義が存在する場合
-      <% @conf_e.push(@alias_def) %>
+      <% # @conf_e.push(@alias_def) %>
       $("#console").append("別名定義:<%= $e %>の別名は<%= @alias_def %><br><br>");
   }
 
   // 別名定義(正答)
   if (<%= @has_alias_r %>) {  // 別名定義が存在する場合
-      <% @conf_r.push(@alias_def_r) %>
-      $("#console").append("別名定義:<%= $right %>の別名は<%= @conf_r%><br><br>");
+    <% @conf_r.push(@alias_def_r) %>
+    $("#console").append("別名定義:<%= $right %>の別名は<%= @alias_def_r%><br><br>");
   }
 
   <% if @is_conf_e then %><% @conf_e.clear %><% end %>
@@ -136,29 +136,31 @@ if (<%= @prob %>) { // 問題文が入力
 }
 
 if (<%= @tern2 %>) {
-  $("#console").append("正答の正規化されたレーベンシュタイン距離の値を計算します。<br><br>");
-  $("#console").append("<% @data.each do |datum| %><%= $right %> : <%= datum.val %> = <% ld = Levenshtein.normalized_distance($right,datum.val)%><% if ld == 0 then %><% @is_conf_r = true %><font color='green'><%= ld %></font><% elsif (0.01..0.50).include?(ld) then %><% @conf_r.push(datum.val) %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
-
-  <% if !@has_alias_r && @is_conf_r %>
-    <% @conf_r.clear %>
-  <% end %>
-  $("#console").append("<%= @conf_r %> <%= @is_conf_r %><br><br>");
-
-// 正答の推定
-  if (<%= @conf_r.count > 0 %>) {
-    <% @conf_r.compact! %> // nilを除外
-    <% @conf_r.uniq! %>
-    $("#console").append("もしかして、 <%= $right %> は <%= @conf_r.join(" か ") %> ですか？<br><br>");
-    $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $right %> は <%= @conf_r.join(" か ") %> ですか？</font></div>');
-    $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "cr") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<% @conf_r.each_with_index do |cr, i| %><%= button_tag(type: "submit", class: "btn btn-primary", name: cr, id: cr) do %> <%= cr %> <% end %>&nbsp;&nbsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "nohit_r", id: "nohit_r") do %> 該当なし <% end %><% end %></div>');
-    <% @conf_r.each do |cr| %>
-      $("#<%=cr%>").click(function(){
-        $("#console").append("正答を <%= cr %> に変更しました。<br><br>");
-        $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= $right %> を <%= cr %> に変更しました。</font></div>');
-        <% $right_sub = cr %>
-        $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ajx2", html: {"data-parsley-validate" => "", "parsley-use-html5-constraints" => false}) do %><div class="field"><div class="col-xs-3"><%= text_field_tag('ajx2[right]', $right_sub, class: 'form-control', placeholder: '正答', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong1]', $wrong1, class: 'form-control', placeholder: '誤答1', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong2]', $wrong2, class: 'form-control', placeholder: '誤答2', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong3]', $wrong3, class: 'form-control', placeholder: '誤答3', 'required' => '') %></div><br><br><br><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %>&nbsp;&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "create", id: "create") do %> 作成 <% end %></div><% end %></div>');
-      });
+    $("#console").append("正答の正規化されたレーベンシュタイン距離の値を計算します。<br><br>");
+    <% if !$right.nil? %>
+      $("#console").append("<% @data.each do |datum| %><%= $right %> : <%= datum.val %> = <% ld = Levenshtein.normalized_distance($right,datum.val)%><% if ld == 0 then %><% @is_conf_r = true %><font color='green'><%= ld %></font><% elsif (0.01..0.50).include?(ld) then %><% @conf_r.push(datum.val) %><font color='red'><%= ld %></font><% else %><%= ld %><% end %><br><% end %><br>");
     <% end %>
+    <% if !@has_alias_r && @is_conf_r %> // バグ
+      $("#console").append("<%= @conf_r %><br><br>");
+      <% @conf_r.clear %>
+    <% end %>
+    $("#console").append("<%= @conf_r %> <%= @is_conf_r %><br><br>");
+
+    // 正答の推定
+    if (<%= @conf_r.count > 0 %>) {
+      <% @conf_r.compact! %> // nilを除外
+      <% @conf_r.uniq! %>
+      $("#console").append("もしかして、 <%= $right %> は <%= @conf_r.join(" か ") %> ですか？<br><br>");
+      $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">もしかして、 <%= $right %> は <%= @conf_r.join(" か ") %> ですか？</font></div>');
+      $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "cr") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<% @conf_r.each_with_index do |cr, i| %><%= button_tag(type: "submit", class: "btn btn-primary", name: cr, id: cr) do %> <%= cr %> <% end %>&nbsp;&nbsp;<% end %><%= button_tag(type: "submit", class: "btn btn-default", name: "nohit_r", id: "nohit_r") do %> 該当なし <% end %><% end %></div>');
+      <% @conf_r.each do |cr| %>
+        $("#<%=cr%>").click(function(){
+          $("#console").append("正答を <%= cr %> に変更しました。<br><br>");
+          $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3"><%= $right %> を <%= cr %> に変更しました。</font></div>');
+          <% $right_sub = cr %>
+          $("#dialogue").append('<div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "ajx2", html: {"data-parsley-validate" => "", "parsley-use-html5-constraints" => false}) do %><div class="field"><div class="col-xs-3"><%= text_field_tag('ajx2[right]', $right_sub, class: 'form-control', placeholder: '正答', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong1]', $wrong1, class: 'form-control', placeholder: '誤答1', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong2]', $wrong2, class: 'form-control', placeholder: '誤答2', 'required' => '') %></div><div class="col-xs-3"><%= text_field_tag('ajx2[wrong3]', $wrong3, class: 'form-control', placeholder: '誤答3', 'required' => '') %></div><br><br><br><%= image_tag 'person.png', :size => '40x40', :align => 'middle' %>&nbsp;&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "create", id: "create") do %> 作成 <% end %></div><% end %></div>');
+        });
+      <% end %>
   }
 
   $("#console").append("正答に <%= $right %> を設定しました。<br><br>");
