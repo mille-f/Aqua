@@ -94,8 +94,8 @@ class QuestionController < ApplicationController
 
   def demo
     con = ActiveRecord::Base.connection
-    #nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
-    nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/ohenro.dic")
+    nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/alkali.dic")
+    #nm = Natto::MeCab.new(userdic: "/home/vagrant/aquarium/dic/ohenro.dic")
     @prob = false
     @tern2 = false
     @finish = false
@@ -110,11 +110,16 @@ class QuestionController < ApplicationController
     @conf_e = Array.new()
     @conf_a = Array.new()
     @conf_r = Array.new()
+    # 誘導作問
+    nodes = Array.new()
+    @all_nodes = Hash.new(0) # 全ノード
+    @ack_nodes = Hash.new(0) # 既知ノード
+    @intelli = Hash.new{ |h,k| h[k] = {} } # 単語、母数、理解度の三組
 
 
     if @role == 0 then
-      #@data  = "#{@user.capitalize}Alkali".constantize.all
-      @data  = "#{@user.capitalize}Ohenro".constantize.all
+      @data  = "#{@user.capitalize}Alkali".constantize.all
+      #@data  = "#{@user.capitalize}Ohenro".constantize.all
     end
     @state = {0 => "不明", 1 => "既知", 2 => "誤り", 3 => "定着"}
     @color = {0 => "warning", 1 => "info", 2 => "danger", 3 => "success"}
@@ -162,18 +167,18 @@ class QuestionController < ApplicationController
       p word
       #$e = word[0]
       #$a = word[1]
-      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
-      unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
+      #unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a.empty? then
         @prob = true
       end
     end
 
     # 別名定義
     @has_alias = false # 別名定義が存在するかのフラグ
-      #terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
-      terms1 = con.select_all("select ent from ohenros where ent like '%' and att like '別名' and val like '#{$e}'").to_a
-      #terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
-      terms2 = con.select_all("select val from ohenros where ent like '#{$e}' and att like '別名' and val like '%'").to_a
+      terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '名称' and val like '#{$e}'").to_a
+      #terms1 = con.select_all("select ent from ohenros where ent like '%' and att like '別名' and val like '#{$e}'").to_a
+      terms2 = con.select_all("select val from alkalis where ent like '#{$e}' and att like '名称' and val like '%'").to_a
+      #terms2 = con.select_all("select val from ohenros where ent like '#{$e}' and att like '別名' and val like '%'").to_a
     if !terms1.empty? && terms2.empty? then
       @alias_def = terms1[0].fetch("ent")
       @has_alias = true
@@ -181,13 +186,43 @@ class QuestionController < ApplicationController
 
     # 別名定義(正答)
     @has_alias_r = false # 別名定義が存在するかのフラグ
-      terms1 = con.select_all("select ent from ohenros where ent like '%' and att like '別名' and val like '#{$right}'").to_a
-      terms2 = con.select_all("select val from ohenros where ent like '#{$right}' and att like '別名' and val like '%'").to_a
+      terms1 = con.select_all("select ent from alkalis where ent like '%' and att like '別名' and val like '#{$right}'").to_a
+      #terms1 = con.select_all("select ent from ohenros where ent like '%' and att like '別名' and val like '#{$right}'").to_a
+      terms2 = con.select_all("select val from alkalis where ent like '#{$right}' and att like '別名' and val like '%'").to_a
+      #terms2 = con.select_all("select val from ohenros where ent like '#{$right}' and att like '別名' and val like '%'").to_a
     if !terms1.empty? && terms2.empty? then
       @alias_def_r = terms1[0].fetch("ent")
       #@conf_r.push(@alias_def_r)
       @has_alias_r = true
     end
+
+    ### 誘導作問
+    # 配列にノードとなり得る値を追加
+    @data.each do |datum|
+      nodes.push(datum.ent)
+      nodes.push(datum.val)
+    end
+    nodes.each do |elem|
+      @all_nodes[elem] += 1 # 全ノード数のカウント
+      @ack_nodes[elem] = 0  # 既知ノード数の初期化
+    end
+    # 隣接既知ノード数の計算
+    nodes.uniq!.each do |elem|
+      @data.each do |datum|
+        if datum.ent == elem || datum.val == elem then
+          if datum.state == 1
+            @ack_nodes[elem] += 1
+          end
+        end
+      end
+    end
+    # 理解度の計算
+    nodes.each do |elem|
+      if @all_nodes[elem] > 1
+        @intelli[elem][@all_nodes[elem]] = @ack_nodes[elem] / @all_nodes[elem].to_f
+      end
+    end
+    @intelli.sort_by {|h| h.first}.reverse
 
     # ドリル＆プラクティス
     @choices = Array.new()
@@ -235,6 +270,14 @@ class QuestionController < ApplicationController
       @is_fix = 0
     end
 
+    # 新しく問題を作り直すかどうかの判定
+    @is_new = 2
+    if params['new_yes']
+      @is_new = 1
+    elsif params['new_no']
+      @is_new = 0
+    end
+
     # 作問を続けるかどうかの判定
     @is_continue = 2
     if params['continue_yes']
@@ -245,8 +288,8 @@ class QuestionController < ApplicationController
 
     # 知識状態のリセット
     if params['reset']
-      #data = "#{@user.capitalize}Alkali".constantize.all
-      data = "#{@user.capitalize}Ohenro".constantize.all
+      data = "#{@user.capitalize}Alkali".constantize.all
+      #data = "#{@user.capitalize}Ohenro".constantize.all
       data.each do |datum|
         datum.update_attribute(:state, '0')
       end
@@ -266,25 +309,25 @@ class QuestionController < ApplicationController
       $wrong3 = params['ajx2']['wrong3']
 
       # 正答が正しくない場合
-      #if con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
-      if con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+      if con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
+      #if con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$right}'").to_a.empty? then
         @right_error = true
-        #@correct = con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
-        @correct = con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
+        @correct = con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
+        #@correct = con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '%'").to_a[0].fetch("val")
       end
       # 誤答1が正しくない場合
-      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
-      unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
+      #unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong1}'").to_a.empty? then
         @wrong1_error = true
       end
       # 誤答2が正しくない場合
-      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
-      unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
+      #unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong2}'").to_a.empty? then
         @wrong2_error = true
       end
       # 誤答3が正しくない場合
-      #unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
-      unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
+      unless con.select_all("select val from alkalis where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
+      #unless con.select_all("select val from ohenros where ent like '#{$e}' and att like '#{$a}' and val like '#{$wrong3}'").to_a.empty? then
         @wrong3_error = true
       end
 
@@ -295,8 +338,8 @@ class QuestionController < ApplicationController
         unless res.nil?
           res.update_attribute(:state, '1')
         end
-        #question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
-        question = QuestionOhenro.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
+        question = QuestionAlkali.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
+        #question = QuestionOhenro.new(question: $txt, correct: $right, wrong1: $wrong1, wrong2: $wrong2, wrong3: $wrong3, author_id: @user_id,  author_name: @user)
         question.save
       else
         res = "#{@user.capitalize}Alkali".constantize.find_by(ent: "#{$e}", att: "#{$a}")
