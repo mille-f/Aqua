@@ -114,8 +114,9 @@ class QuestionController < ApplicationController
     nodes = Array.new()
     @all_nodes = Hash.new(0) # 全ノード
     @ack_nodes = Hash.new(0) # 既知ノード
-    @intelli = Hash.new{ |h,k| h[k] = {} } # 単語、母数、理解度の三組
-
+    #@intelli = Hash.new{ |h,k| h[k] = {} } # 単語、母数、理解度の三組
+    @intelli = Hash.new(0)
+    @remain = Hash.new(0)
 
     if @role == 0 then
       @data  = "#{@user.capitalize}Alkali".constantize.all
@@ -202,6 +203,7 @@ class QuestionController < ApplicationController
       nodes.push(datum.ent)
       nodes.push(datum.val)
     end
+
     nodes.each do |elem|
       @all_nodes[elem] += 1 # 全ノード数のカウント
       @ack_nodes[elem] = 0  # 既知ノード数の初期化
@@ -219,10 +221,15 @@ class QuestionController < ApplicationController
     # 理解度の計算
     nodes.each do |elem|
       if @all_nodes[elem] > 1
-        @intelli[elem][@all_nodes[elem]] = @ack_nodes[elem] / @all_nodes[elem].to_f
+        @intelli[elem] = @ack_nodes[elem] / @all_nodes[elem].to_f
+        @remain[elem] = @all_nodes[elem] - @ack_nodes[elem]
       end
     end
-    @intelli.sort_by {|h| h.first}.reverse
+    p "理解度昇順ソート"
+    p @intelli.sort {|a,b| b[1] <=> a[1]}.reverse!
+    p "残数降順ソート"
+    p @remain.sort {|a,b| a[1] <=> b[1]}.reverse!
+
 
     # ドリル＆プラクティス
     @choices = Array.new()

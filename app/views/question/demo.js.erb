@@ -195,10 +195,18 @@ if (<%= @tern2 %>) {
 
 if (<%= @finish %>) {
   $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">問題文:&nbsp;&nbsp;<b><%= $txt %></b><br>　　　&nbsp;正答:&nbsp;&nbsp;<b><%= $right %></b>&nbsp;&nbsp;&nbsp;誤答1:&nbsp;&nbsp;<b><%= $wrong1 %></b>&nbsp;&nbsp;&nbsp;誤答2:&nbsp;&nbsp;<b><%= $wrong2 %></b>&nbsp;&nbsp;&nbsp;誤答3:&nbsp;&nbsp;<b><%= $wrong3 %></b><br><br>　　　&nbsp;上記の問題がASQに登録されました。</font></div>');
-  $("#finish").html('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">良い問題ですね。</font></div>');
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">良い問題ですね。</font></div>');
   $("#console").append("<%= Time.zone.now %><br><br>");
   $("#console").append("理解度<br>");
-  $("#console").append("<%= @intelli %><br><br>");
+  $("#console").append("<%= @intelli.sort {|a,b| b[1] <=> a[1]}.reverse! %><br><br>");
+  $("#console").append("残数<br>");
+  $("#console").append("<%= @remain.sort {|a,b| a[1] <=> b[1]}.reverse! %><br><br>");
+  <% @intelli.sort {|a,b| b[1] <=> a[1]}.reverse! %>
+  <% @intelli.sort {|a,b| b[1] <=> a[1]}.reverse! %>
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">Baについて、もっと作問してみましょう。作問できますか？</font></div>');
+  $("#dialogue").append('<div class="fix"><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_sakumon") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "sakumon_yes", id: "sakumon_yes") do %> Yes <% end %>&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-default", name: "sakumon_no", id: "sakumon_no") do %> No <% end %><% end %></div></div>');
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">Baについて詳しいですか？次はBaで作問してみましょう。作問できますか？</font></div>');
+  $("#dialogue").append('<div class="fix"><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_sakumon") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "sakumon_yes", id: "sakumon_yes") do %> Yes <% end %>&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-default", name: "sakumon_no", id: "sakumon_no") do %> No <% end %><% end %></div></div>');
 } else if (<%= @tern2 %> && <%= @conf_r.count == 0 %>) {
   if (<%= @right_error %>) {
     $("#finish").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">正答が間違っています。　正しくは、 <%= $e %> の <%= $a %> は <%= @correct %> です。</font></div>');
