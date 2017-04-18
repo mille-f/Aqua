@@ -22,3 +22,4 @@
 /node_modules
 npm-debug.log
 /app/assets/images
+/db/wnjpn.db
