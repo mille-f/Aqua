@@ -1,13 +1,12 @@
 <h3>意味ネットワーク</h3>
-<input class="btn btn-primary" type="button" onclick="changeNode()" value="change"> <br />
+<input class="btn btn-primary" type="button" onclick="changeColor()" value="change"> <br />
 <div id="semnet"></div>
 <script type="text/javascript">
 // create an array with nodes
 var nodes = [];
 for ( var i in gon.node ) {
-  nodes.push({id: (gon.node[i]), label: (gon.node[i])});
-  document.write(gon.node[i]+"<br>");
-  //document.write(gon.state)
+  nodes.push({id: (gon.node[i]), label: (gon.node[i]), color: {background: ''}});
+  //document.write(gon.node[i]+"<br>");
 }
   document.write("<br>");
 //nodes.push({id: 'hoge', label: 'hoge', hidden: false});
@@ -15,10 +14,36 @@ for ( var i in gon.node ) {
 var edges = [];
 for (var ent in gon.triad) {
   for ( var val in gon.triad[ent] ) {
-    edges.push({from: ent, to: val, label: gon.triad[ent][val]});
-    document.write(ent+" "+val+" "+gon.state[ent][val]+"<BR>");
+    edges.push({from: ent, to: val, label: gon.triad[ent][val], font: {color: ''}});
+    //document.write(ent+" "+gon.triad[ent][val]+" "+val+" "+gon.state[ent][val]+"<BR>");
   }
 }
+
+for (var ent in gon.triad) {
+  for (var val in gon.triad[ent]) {
+    if ( gon.state[ent][val] != "#D9EDF7" ) {
+      //document.write(ent+" "+gon.triad[ent][val]+" "+val+"<br>");
+      for (var i = 0, l = nodes.length; i < l; i++) {
+        //if (nodes[j].id == ent) {
+        //  nodes[j].color.background = '#343434';
+        //}
+        if (nodes[i].id == val) {
+          nodes[i].color.background = '#343434';
+        }
+      }
+      for (var i = 0, l = edges.length; i < l; i++) {
+        if (edges[i].to == val) {
+          edges[i].font.color = 'white'
+        }
+      }
+    }
+  }
+}
+
+//document.write("<br><br>nodes<br>");
+//document.write(JSON.stringify(nodes));
+//document.write("<br><br>edges<br>");
+//document.write(JSON.stringify(edges));
 
 // create a network
 var container = document.getElementById('semnet');
@@ -33,6 +58,8 @@ edges: { arrows: 'to', font: { size: 16, align: 'top' } }
 var network = new vis.Network(container, data, options);
 
 function changeColor() {
-  nodes.update([{id:1, color:{background:'#fff'}}]);
+  var newId = (Math.random() * 1e7).toString(32);
+  node.add({id: newId, label: "hoge"});
+  nodes.push(newId);
 }
 </script>
