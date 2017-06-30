@@ -1,18 +1,36 @@
 <% if @role == 1 %>
-  <h3><%= @user %> さん</h3>
-  <div><a class="btn btn-primary" href="/question/semnet">意味ネットワーク</a></div><br>
-<% elsif @role == 0 %>
   <h3> teacher </h3>
+  <div><a class="btn btn-primary" href="/question/semnet">意味ネットワーク</a></div><br>
+  <h3>作問知識ベース</h3>
   <table border='1' class="table table-hover">
     <tr>
-      <th>entity</th><th>attribute</th><th>value</th><th>知識状態</th>
+      <th>問題文</th><th>正答</th><th>誤答1</th><th>誤答2</th><th>誤答3</th><th>作成者id</th><th>作成者名</th>
     </tr>
     <% @data.each do |datum| %>
       <tr>
-        <td><%= datum.ent %></td>
-        <td><%= datum.att %></td>
-        <td><%= datum.val %></td>
-        <td class=<%= @color[datum.state] %>><%= @state[datum.state] %></td>
+        <td><%= datum.question %></td>
+        <td><%= datum.correct %></td>
+        <td><%= datum.wrong1 %></td>
+        <td><%= datum.wrong2 %></td>
+        <td><%= datum.wrong3 %></td>
+        <td><%= datum.author_id %></td>
+        <td><%= datum.author_name %></td>
+      </tr>
+    <% end %>
+  </table>
+<% elsif @role == 0 %>
+  <h3><%= @user %> さんが作成した問題</h3>
+  <table border='1' class="table table-hover">
+    <tr>
+      <th>問題文</th><th>正答</th><th>誤答1</th><th>誤答2</th><th>誤答3</th>
+    </tr>
+    <% @data.each do |datum| %>
+      <tr>
+        <td><%= datum.question %></td>
+        <td><%= datum.correct %></td>
+        <td><%= datum.wrong1 %></td>
+        <td><%= datum.wrong2 %></td>
+        <td><%= datum.wrong3 %></td>
       </tr>
     <% end %>
   </table>

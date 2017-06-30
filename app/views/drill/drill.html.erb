@@ -1,0 +1,14 @@
+<p id="page-top"><a href="#top"><i class="fa fa-arrow-up" aria-hidden="true"></i></a></p>
+
+<div id="dialogue">
+  <div class="well">
+    <%= image_tag 'pc.png', :size => '40x32', :align => 'middle' %> &nbsp;&nbsp;
+    <font size="3">ドリル＆プラクティスを開始します。</font>
+  </div>
+  <div class="well">
+    <%= form_for("drill", :method => :post, :remote => true, :id => "start") do %>
+      <%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;
+      <%= button_tag(type: "submit", class: "btn btn-primary", name: "start", id: "start") do %> Start <% end %>
+    <% end %>
+  </div>
+</div>
