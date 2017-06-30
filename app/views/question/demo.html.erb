@@ -14,7 +14,7 @@
       <%= image_tag 'pc.png', :size => '40x32', :align => 'middle' %> &nbsp;&nbsp;
       <font size="3">問題文を入力してください。</font>
     </div>
-    <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false}) do %>
+    <%= form_for('demo', :method => :post, :remote => true, :id => "ajx", html: {'name' => 'demo' ,'data-parsley-validate' => '', 'parsley-use-html5-constraints' => false, :autocomplete => :off}) do %>
       <div class="well">
         <div class="form-inline form-group">
           <div class="form-group">
