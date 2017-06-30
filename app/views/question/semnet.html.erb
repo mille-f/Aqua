@@ -29,6 +29,8 @@ for (var ent in gon.triad) {
         //}
         if (nodes[i].id == val) {
           nodes[i].color.background = '#343434';
+        } else {
+          //nodes[i].color.background = gon.state[ent][val];
         }
       }
       for (var i = 0, l = edges.length; i < l; i++) {
@@ -40,8 +42,8 @@ for (var ent in gon.triad) {
   }
 }
 
-//document.write("<br><br>nodes<br>");
-//document.write(JSON.stringify(nodes));
+document.write("<br><br>nodes<br>");
+document.write(JSON.stringify(nodes));
 //document.write("<br><br>edges<br>");
 //document.write(JSON.stringify(edges));
 
