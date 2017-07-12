@@ -1,5 +1,13 @@
 <h3>意味ネットワーク</h3>
-<input class="btn btn-primary" type="button" onclick="changeColor()" value="change"> <br />
+<!--<div class="row">
+  <div class="col-xs-2">
+    <select class="form-control">
+      <option>アルカリ金属</option>
+      <option>計算機入門 I</option>
+    </select>
+  </div>
+  <input class="btn btn-primary" type="button" onclick="location.reload()" value="Reload"> <br /><br />
+</div>-->
 <div id="semnet"></div>
 <script type="text/javascript">
 // create an array with nodes
@@ -19,29 +27,41 @@ for (var ent in gon.triad) {
   }
 }
 
-for (var ent in gon.triad) {
-  for (var val in gon.triad[ent]) {
-    if ( gon.state[ent][val] != "#D9EDF7" ) {
-      //document.write(ent+" "+gon.triad[ent][val]+" "+val+"<br>");
-      for (var i = 0, l = nodes.length; i < l; i++) {
-        //if (nodes[j].id == ent) {
-        //  nodes[j].color.background = '#343434';
-        //}
-        if (nodes[i].id == val) {
-          nodes[i].color.background = '#343434';
-        } else {
-          //nodes[i].color.background = gon.state[ent][val];
+if ( gon.role == 0 ) {
+  for (var ent in gon.triad) {
+    for (var val in gon.triad[ent]) {
+      if ( gon.state[ent][val] != "#D9EDF7" ) {
+        //document.write(ent+" "+gon.triad[ent][val]+" "+val+"<br>");
+        for (var i = 0, l = nodes.length; i < l; i++) {
+          //if (nodes[j].id == ent) {
+          //  nodes[j].color.background = '#343434';
+          //}
+          if (nodes[i].id == val) {
+            nodes[i].color.background = '#343434';
+          } else {
+            //nodes[i].color.background = gon.state[ent][val];
+          }
         }
-      }
-      for (var i = 0, l = edges.length; i < l; i++) {
-        if (edges[i].to == val) {
-          edges[i].font.color = 'white'
+        for (var i = 0, l = edges.length; i < l; i++) {
+          if (edges[i].to == val) {
+            edges[i].font.color = 'white'
+          }
         }
       }
     }
   }
 }
-
+if ( gon.role == 1 ) {
+  for (var ent in gon.triad) {
+    for (var val in gon.triad[ent]) {
+      for (var i = 0, l = nodes.length; i < l; i++) {
+        if (nodes[i].id == val) {
+          nodes[i].color.background = gon.state[ent][val];
+        }
+      }
+    }
+  }
+}
 document.write("<br><br>nodes<br>");
 document.write(JSON.stringify(nodes));
 //document.write("<br><br>edges<br>");

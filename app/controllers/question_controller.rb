@@ -74,10 +74,13 @@ class QuestionController < ApplicationController
     triad = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
     state = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
     color = {0 => "#FCF8E3", 1 => "#D9EDF7", 2 => "#F2DEDE", 3 => "#DFF0D8"}
+    #color = {0 => "yellow", 1 => "blue", 2 => "red", 3 => "green"}
     role  = current_user.role.to_i
     user  = current_user.username.to_s.capitalize
-    if role == 0 then
-      data  = "#{user}Alkali".constantize.all
+    if role == 1 then
+      #data = "#{user}Alkali".constantize.all
+      data = Test1Alkali.all
+      #data = "#{user}Cs1".constantize.all
       data.each do |datum|
         #if datum.state == 0 then
         node.push(datum.ent)
@@ -88,7 +91,8 @@ class QuestionController < ApplicationController
       end
       gon.triad = triad
       gon.state = state
-      gon.node = node.uniq!
+      gon.role  = role
+      gon.node  = node.uniq!
     end
   end
 
