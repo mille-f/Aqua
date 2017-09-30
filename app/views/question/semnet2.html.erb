@@ -1,0 +1,219 @@
+<% content_for :head do %>
+<style type="text/css">
+html, body {
+  font: 11pt arial;
+}
+
+h1 {
+  font-size: 150%;
+  margin: 5px 0;
+}
+
+h2 {
+  font-size: 100%;
+  margin: 5px 0;
+}
+
+table.view {
+  width: 100%;
+}
+
+table td {
+  vertical-align: top;
+}
+
+table table {
+  background-color: #f5f5f5;
+  border: 1px solid #e5e5e5;
+}
+
+table table td {
+  vertical-align: middle;
+}
+
+input[type=text], pre {
+  border: 1px solid lightgray;
+}
+
+input#node-label {
+  top: 200px;
+  left: 300px;
+}
+
+pre {
+  margin: 0;
+  padding: 5px;
+  font-size: 10pt;
+}
+
+#network {
+  width: 100%;
+  height: 500px;
+  border: 1px solid lightgray;
+}
+</style>
+
+
+<script type="text/javascript">
+var nodes, edges, network;
+
+// convenience method to stringify a JSON object
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function addNode() {
+  try {
+    nodes.add({
+      id: document.getElementById('node-label').value,
+      label: document.getElementById('node-label').value
+    });
+    edges.add({
+      id: document.getElementById('edge-label').value,
+      label: document.getElementById('edge-label').value,
+      from: document.getElementById('node-label').value,
+      to: document.getElementById('node-label2').value
+    });
+    nodes.add({
+      id: document.getElementById('node-label2').value,
+      label: document.getElementById('node-label2').value
+    });
+  }
+  catch (err) {
+    alert(err);
+  }
+}
+
+function removeNode() {
+  try {
+    nodes.remove({id: document.getElementById('node-label').value});
+    edges.remove({id: document.getElementById('edge-label').value});
+    nodes.remove({id: document.getElementById('node-label2').value});
+  }
+  catch (err) {
+    alert(err);
+  }
+}
+
+function crear() {
+  $(this.form).find("textarea, :text, select").val("").end().find(":checked").prop("checked", false);
+}
+
+
+function draw() {
+  // create an array with nodes
+  nodes = new vis.DataSet();
+  nodes.on('*', function () {
+    document.getElementById('nodes').innerHTML = JSON.stringify(nodes.get(), null, 4);
+  });
+  nodes.add([
+    {id: 'アルカリ金属', label: 'アルカリ金属'},
+    {id: 'K', label: 'K'},
+    {id: 'Li', label: 'Li'},
+    {id: 'Na', label: 'Na'},
+    {id: '赤紫色', label: '赤紫色'},
+    {id: 'カリウム', label: 'カリウム'},
+    {id: '植物の成長', label: '植物の成長'},
+    {id: '赤色', label: '赤色'},
+    {id: 'リチウム', label: 'リチウム'},
+    {id: '電池素材', label: '電池素材'},
+    {id: '黄色', label: '黄色'},
+    {id: 'ナトリウム', label: 'ナトリウム'},
+    {id: '道路ランプ', label: '道路ランプ'},
+    {id: '金属光沢を失う', label: '金属光沢を失う'}
+  ]);
+
+  // create an array with edges
+  edges = new vis.DataSet();
+  edges.on('*', function () {
+    document.getElementById('edges').innerHTML = JSON.stringify(edges.get(), null, 4);
+  });
+  edges.add([
+    {id: '1', from: 'アルカリ金属', to: 'K', label: '含む'},
+    {id: '2', from: 'アルカリ金属', to: 'Li', label: '含む'},
+    {id: '3', from: 'アルカリ金属', to: 'Na', label: '含む'},
+    {id: '4', from: 'K', to: '赤紫色', label: '炎色反応'},
+    {id: '5', from: 'K', to: 'カリウム', label: '名称'},
+    {id: '6', from: 'K', to: '植物の成長', label: '用途例'},
+    {id: '7', from: 'K', to: 'アルカリ金属', label: 'is-a'},
+    {id: '8', from: 'Li', to: '赤色', label: '炎色反応'},
+    {id: '9', from: 'Li', to: 'リチウム', label: '名称'},
+    {id: '10', from: 'Li', to: '電池素材', label: '用途例'},
+    {id: '11', from: 'Li', to: 'アルカリ金属', label: 'is-a'},
+    {id: '12', from: 'Na', to: '黄色', label: '炎色反応'},
+    {id: '13', from: 'Na', to: 'ナトリウム', label: '名称'},
+    {id: '14', from: 'Na', to: '道路ランプ', label: '用途例'},
+    {id: '15', from: 'Na', to: '金属光沢を失う', label: '酸化反応'},
+    {id: '16', from: 'Na', to: 'アルカリ金属', label: 'is-a'}
+  ]);
+
+  // create a network
+  var container = document.getElementById('network');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {
+    nodes: { shape: 'box', font: { size: 20} },
+    edges: { arrows: 'to', font: { size: 16, align: 'top' } }
+  };
+  network = new vis.Network(container, data, options);
+
+}
+
+</script>
+<% end %>
+
+<h1>編集</h1>
+<table>
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <td></td>
+          <td><label for="node-label">Entity</label></td>
+          <td><input id="node-label" type="text" value="Ba"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><label for="edge-label">Attribute</label></td>
+          <td><input id="edge-label" type="text" value="炎色反応"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><label for="node-label2">Value</label></td>
+          <td><input id="node-label2" type="text" value="黄緑色"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Action</td>
+          <td>
+            <button class="btn btn-primary" id="node-add" onclick="addNode();">追加</button>
+            <button class="btn btn-danger" id="node-remove" onclick="removeNode();">削除</button>
+            <button class="btn btn-default" id="clear" onclick="clear();">クリア</button>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<br><br>
+
+<h2>意味ネットワーク</h2>
+<div id="network"></div>
+<table class="view">
+  <colgroup>
+    <col width="50%">
+    <col width="50%">
+  </colgroup>
+  <tr>
+    <td>
+      <h2>Nodes</h2>
+      <pre id="nodes"></pre>
+    </td>
+    <td>
+      <h2>Edges</h2>
+      <pre id="edges"></pre>
+    </td>
+  </tr>
+</table>
