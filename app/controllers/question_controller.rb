@@ -74,10 +74,10 @@ class QuestionController < ApplicationController
     triad = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
     state = Hash.new { |h,k| h[k] = {} } # 2次元ハッシュの初期化
     color = {0 => "#FCF8E3", 1 => "#D9EDF7", 2 => "#F2DEDE", 3 => "#DFF0D8"}
-    #color = {0 => "yellow", 1 => "blue", 2 => "red", 3 => "green"}
+    #color = {0 => "gold", 1 => "lightskyblue", 2 => "pink", 3 => "green"}
     role  = current_user.role.to_i
     user  = current_user.username.to_s.capitalize
-    if role == 1 then
+    if role == 0 then
       #data = "#{user}Alkali".constantize.all
       data = Test1Alkali.all
       #data = "#{user}Cs1".constantize.all

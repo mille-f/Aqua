@@ -17,9 +17,9 @@ html lang="ja"
     /! Le HTML5 shim, for IE6-8 support of HTML elements
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"
+    = yield :head
 
-
-  body
+  body onload="draw()"
     .navbar.navbar-default.navbar-static-top
         .container
           button.navbar-toggle type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse"
@@ -57,5 +57,6 @@ html lang="ja"
       .row
         = bootstrap_flash
         = yield
+        = yield :foot
 
   footer

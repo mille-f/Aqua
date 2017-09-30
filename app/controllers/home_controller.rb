@@ -8,6 +8,13 @@ class HomeController < ApplicationController
   end
 
   def show
+  end
+
+  def gaze
+
+  end
+
+  def video
 
   end
 end

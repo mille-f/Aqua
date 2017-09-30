@@ -4,6 +4,9 @@
     "vis": "latest",
     "jquery.steps": "latest",
     "jquery.validation": "latest",
-    "datatables": "latest"
+    "datatables": "latest",
+    "webgazer": "latest"
+  },
+  "resolutions": {
   }
 }

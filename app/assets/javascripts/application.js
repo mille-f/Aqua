@@ -14,9 +14,10 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require vis
-// require jquery-validation
-//= require jquery.steps
 //= require datatables
-//= require parsley
-//= require parsley.i18n.ja
+// require webgazer
+// require jquery-validation
+// require jquery.steps
+// require parsley
+// require parsley.i18n.ja
 //= require_tree .

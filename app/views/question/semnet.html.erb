@@ -8,10 +8,13 @@
   </div>
   <input class="btn btn-primary" type="button" onclick="location.reload()" value="Reload"> <br /><br />
 </div>-->
+
 <div id="semnet"></div>
+
 <script type="text/javascript">
-// create an array with nodes
 var nodes = [];
+
+// create an array with nodes
 for ( var i in gon.node ) {
   nodes.push({id: (gon.node[i]), label: (gon.node[i]), color: {background: ''}});
   //document.write(gon.node[i]+"<br>");
@@ -62,8 +65,8 @@ if ( gon.role == 1 ) {
     }
   }
 }
-document.write("<br><br>nodes<br>");
-document.write(JSON.stringify(nodes));
+//document.write("<br><br>nodes<br>");
+//document.write(JSON.stringify(nodes));
 //document.write("<br><br>edges<br>");
 //document.write(JSON.stringify(edges));
 
@@ -79,9 +82,4 @@ edges: { arrows: 'to', font: { size: 16, align: 'top' } }
 };
 var network = new vis.Network(container, data, options);
 
-function changeColor() {
-  var newId = (Math.random() * 1e7).toString(32);
-  node.add({id: newId, label: "hoge"});
-  nodes.push(newId);
-}
 </script>

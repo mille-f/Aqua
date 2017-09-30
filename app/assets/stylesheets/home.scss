@@ -1,3 +1,21 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#container {
+  position: relative;
+}
+
+#container > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  //transform: RotateY(180deg);
+}
+
+#pos {
+  color: white;
+  position: relative;
+  //top: 600;
+  //right: 600;
+}
