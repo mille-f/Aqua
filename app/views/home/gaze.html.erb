@@ -1,0 +1,56 @@
+<h3> 顔認識テスト </h3>
+
+<div id="container">
+  <video id="target" width="400" height="300" autoplay loop></video>
+  <canvas id="result" width="400" height="300"></canvas>
+</div>
+<div id="pos">
+  <p id="positions">positions<br/></p>
+</div>
+
+<input class="btn" type="button" value="Start" onclick="startVideo()" id="startbutton"></input>
+
+<script src="assets/clmtrackr.js"></script>
+<script type="text/javascript">
+window.addEventListener("load", () => {
+  let deviceNavigator = navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+  deviceNavigator.then((s) => {
+    let target = document.getElementById("target");
+
+    let ctracker = new clm.tracker();
+    target.src = window.URL.createObjectURL(s);
+    ctracker.init();
+
+    //let startVideo = () => {
+      ctracker.start(target);
+    //}
+
+    let result = document.getElementById("result");
+    let context = result.getContext("2d");
+    let update = () => { // drawloop
+      requestAnimationFrame(update);
+      context.clearRect(0, 0, result.width, result.height);
+      ctracker.draw(result);
+    };
+    update();
+
+    let position = () => {
+      requestAnimationFrame(position);
+      var positions = ctracker.getCurrentPosition();
+      // positions = [[x_0, y_0], [x_1,y_1], ... ]
+      // do something with the positions ...
+      let positionString = "";
+      if (positions) {
+        for (var p = 0; p < 10; p++) {
+          positionString += "featurepoint "+p+" : ["+positions[p][0].toFixed(2)+","+positions[p][1].toFixed(2)+"]<br/>";
+        }
+        console.log(positionString);
+        document.getElementById('positions').innerHTML = positionString;
+      } else {
+        document.getElementById('positions').innerHTML = "false";
+      }
+    };
+    position();
+  });
+});
+</script>
