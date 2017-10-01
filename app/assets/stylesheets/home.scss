@@ -2,20 +2,37 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-#container {
+#video {
   position: relative;
+  //top: 60px;
+  //left: 500px;
 }
 
-#container > * {
+#video > * {
   position: absolute;
-  top: 0;
-  left: 0;
+  //top: 0;
+  //left: 0;
   //transform: RotateY(180deg);
 }
 
 #pos {
-  color: white;
+  //color: white;
+  //position: absolute;
   position: relative;
-  //top: 600;
-  //right: 600;
+  //top: 60px;
+  //left: 500px;
+}
+
+.youtube-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 0px; height: 0; overflow: hidden;
+}
+
+.YouTube-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

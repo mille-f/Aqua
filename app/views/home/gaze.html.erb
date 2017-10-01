@@ -1,17 +1,85 @@
 <h3> 顔認識テスト </h3>
 
-<div id="container">
-  <video id="target" width="400" height="300" autoplay loop></video>
-  <canvas id="result" width="400" height="300"></canvas>
+<div class="container">
+  <div class="row">
+    <div class="col-md-7">
+      <div id="sample"></div><br /><br />
+      <button class="btn btn-primary" id="start">Start</button>
+      <button class="btn btn-primary" id="now">Now</button>
+      <!--
+      <div class="youtube-container">
+        <iframe id="player" type="text/html" width="600" height="350"
+        src="https://www.youtube.com/embed/MdQGUFSM8w4"
+        frameborder="0">
+        </iframe>
+      </div>
+      -->
+    </div>
+  <div class="col-md-5">
+    <pre class="console">
+      <div class="string">
+        <div id="time"></div>
+      </div>
+    </pre>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <!--
+      <video id="video" width="600" height="350">
+        <%= video_tag("video1.mp4", :autoplay => true, :autobuffer => true, :controls => true) %>
+      </video>
+    -->
+    <br /><br />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div id="video">
+        <video id="target" width="400" height="300" autoplay loop></video>
+        <canvas id="result" width="400" height="300"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div id="pos">
+        <p id="positions">positions<br/></p>
+      </div>
+    </div>
+  </div>
 </div>
-<div id="pos">
-  <p id="positions">positions<br/></p>
-</div>
-
-<input class="btn" type="button" value="Start" onclick="startVideo()" id="startbutton"></input>
 
 <script src="assets/clmtrackr.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script type="text/javascript">
+
+// YouTube Player APIを読み込む
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var ytPlayer;
+var ytArea = 'sample';
+var ytID = 'MdQGUFSM8w4';
+
+// API読み込み後にプレーヤー埋め込み
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player(ytArea, {
+    width: 600,
+    height: 350,
+    videoId: ytID
+  });
+}
+
+// 動画再生
+document.getElementById('start').addEventListener('click', function() {
+    ytPlayer.loadVideoById(ytID);
+}, false);
+
+// 現在の再生時間
+document.getElementById('now').addEventListener('click', function() {
+    $("#time").append(ytPlayer.getCurrentTime()).append('<br />');
+}, false);
+
 window.addEventListener("load", () => {
   let deviceNavigator = navigator.mediaDevices.getUserMedia({ audio: false, video: true });
   deviceNavigator.then((s) => {
@@ -20,10 +88,7 @@ window.addEventListener("load", () => {
     let ctracker = new clm.tracker();
     target.src = window.URL.createObjectURL(s);
     ctracker.init();
-
-    //let startVideo = () => {
-      ctracker.start(target);
-    //}
+    ctracker.start(target);
 
     let result = document.getElementById("result");
     let context = result.getContext("2d");
@@ -46,6 +111,8 @@ window.addEventListener("load", () => {
         }
         console.log(positionString);
         document.getElementById('positions').innerHTML = positionString;
+        //let currentTime = player.getCurrentTime();
+        //document.getElementById('time').innerHTML = currentTime;
       } else {
         document.getElementById('positions').innerHTML = "false";
       }
