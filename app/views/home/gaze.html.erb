@@ -4,8 +4,15 @@
   <div class="row">
     <div class="col-md-7">
       <div id="sample"></div><br /><br />
-      <button class="btn btn-primary" id="start">Start</button>
-      <button class="btn btn-primary" id="now">Now</button>
+      <button class="btn btn-primary" id="start">
+        <i class="fa fa-play" aria-hidden="true"></i>
+      </button>
+      <button class="btn btn-primary" id="pause">
+        <i class="fa fa-pause" aria-hidden="true"></i>
+      </button>
+      <button class="btn btn-primary" id="now">
+        <i class="fa fa-clock-o" aria-hidden="true"></i>
+      </button>
       <!--
       <div class="youtube-container">
         <iframe id="player" type="text/html" width="600" height="350"
@@ -75,6 +82,11 @@ document.getElementById('start').addEventListener('click', function() {
     ytPlayer.loadVideoById(ytID);
 }, false);
 
+// 動画一時停止
+document.getElementById('pause').addEventListener('click', function() {
+    ytPlayer.pauseVideo();
+}, false);
+
 // 現在の再生時間
 document.getElementById('now').addEventListener('click', function() {
     $("#time").append(ytPlayer.getCurrentTime()).append('<br />');
@@ -111,8 +123,10 @@ window.addEventListener("load", () => {
         }
         console.log(positionString);
         document.getElementById('positions').innerHTML = positionString;
-        //let currentTime = player.getCurrentTime();
-        //document.getElementById('time').innerHTML = currentTime;
+        //document.getElementById('time').innerHTML = ytPlayer.getCurrentTime();
+        if (ytPlayer.getPlayerState() == 1) {
+          $("#time").append(ytPlayer.getCurrentTime()).append('<br />');
+        }
       } else {
         document.getElementById('positions').innerHTML = "false";
       }
