@@ -102,6 +102,9 @@ window.addEventListener("load", () => {
     ctracker.init();
     ctracker.start(target);
 
+    let duration = parseInt(ytPlayer.getDuration());
+    let cnt = Array.apply(null, Array(duration)).map(function() {return 0});
+
     let result = document.getElementById("result");
     let context = result.getContext("2d");
     let update = () => { // drawloop
@@ -121,11 +124,12 @@ window.addEventListener("load", () => {
         for (var p = 0; p < 10; p++) {
           positionString += "featurepoint "+p+" : ["+positions[p][0].toFixed(2)+","+positions[p][1].toFixed(2)+"]<br/>";
         }
-        console.log(positionString);
+        //console.log(positionString);
         document.getElementById('positions').innerHTML = positionString;
-        //document.getElementById('time').innerHTML = ytPlayer.getCurrentTime();
         if (ytPlayer.getPlayerState() == 1) {
-          $("#time").append(ytPlayer.getCurrentTime()).append('<br />');
+          //cnt.push(parseInt(ytPlayer.getCurrentTime()));
+          cnt[parseInt(ytPlayer.getCurrentTime())] += 1;
+          document.getElementById('time').innerHTML = cnt;
         }
       } else {
         document.getElementById('positions').innerHTML = "false";
