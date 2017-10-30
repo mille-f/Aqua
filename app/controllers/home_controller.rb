@@ -11,7 +11,11 @@ class HomeController < ApplicationController
   end
 
   def gaze
-
+    @output = false
+    if params['output'] then
+      @output = true
+      #p params[:id]
+    end
   end
 
   def video

@@ -13,6 +13,10 @@
       <button class="btn btn-primary" id="now">
         <i class="fa fa-clock-o" aria-hidden="true"></i>
       </button>
+      <br /><br />
+      <%= form_for("gaze", :method => :post, :remote => true, :id => "output") do %>
+        <%= button_tag(type: "submit", class: "btn btn-primary", name: "output", id: "output") do %> Output <% end %>
+      <% end %>
       <!--
       <div class="youtube-container">
         <iframe id="player" type="text/html" width="600" height="350"
@@ -66,7 +70,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var ytPlayer;
 var ytArea = 'sample';
-var ytID = 'MdQGUFSM8w4';
+//var ytID = 'MdQGUFSM8w4';
+var ytID = '48n9x3NYZtE';
 
 // API読み込み後にプレーヤー埋め込み
 function onYouTubeIframeAPIReady() {
@@ -91,6 +96,10 @@ document.getElementById('pause').addEventListener('click', function() {
 document.getElementById('now').addEventListener('click', function() {
     $("#time").append(ytPlayer.getCurrentTime()).append('<br />');
 }, false);
+
+// 視線情報の出力
+//document.getElementById('output').addEventListener('click', function() {
+//}, {once: true});
 
 window.addEventListener("load", () => {
   let deviceNavigator = navigator.mediaDevices.getUserMedia({ audio: false, video: true });
@@ -127,7 +136,6 @@ window.addEventListener("load", () => {
         //console.log(positionString);
         document.getElementById('positions').innerHTML = positionString;
         if (ytPlayer.getPlayerState() == 1) {
-          //cnt.push(parseInt(ytPlayer.getCurrentTime()));
           cnt[parseInt(ytPlayer.getCurrentTime())] += 1;
           document.getElementById('time').innerHTML = cnt;
         }

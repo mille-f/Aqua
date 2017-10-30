@@ -16,7 +16,8 @@ Rails.application.routes.draw do
   root 'home#top'
   get '/show'  => 'home#show'
   get '/about' => 'home#about'
-  get '/gaze'  => 'home#gaze'
-  get '/video' => 'home#video'
+  #get '/gaze'  => 'home#gaze'
+  match '/gaze', as: 'gaze', to: 'home#gaze', via: [:get, :post]
+  #get '/video' => 'home#video'
 
 end
