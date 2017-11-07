@@ -80,7 +80,7 @@ class QuestionController < ApplicationController
     if role == 0 then
       #data = "#{user}Alkali".constantize.all
       #data = Test1Alkali.all
-      data = "#{user}Periodic_table".constantize.all
+      data = "#{user}Periodictable".constantize.all
       data.each do |datum|
         #if datum.state == 0 then
         node.push(datum.ent)
