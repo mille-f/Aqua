@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421204414) do
+ActiveRecord::Schema.define(version: 20171107162559) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -36,6 +36,61 @@ ActiveRecord::Schema.define(version: 20160421204414) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "cs1s", id: false, force: :cascade do |t|
+    t.string "ent", limit: 255
+    t.string "att", limit: 255
+    t.string "val", limit: 255
+  end
+
+  create_table "keyword_periodic_tables", id: false, force: :cascade do |t|
+    t.string  "keyword", limit: 255
+    t.integer "start",   limit: 4
+    t.integer "end",     limit: 4
+    t.boolean "watch",   limit: 1
+  end
+
+  create_table "ohenros", id: false, force: :cascade do |t|
+    t.string "ent", limit: 255
+    t.string "att", limit: 255
+    t.string "val", limit: 255
+  end
+
+  create_table "periodic_tables", id: false, force: :cascade do |t|
+    t.string "ent", limit: 255
+    t.string "att", limit: 255
+    t.string "val", limit: 255
+  end
+
+  create_table "question_alkalis", id: false, force: :cascade do |t|
+    t.string  "question",    limit: 255
+    t.string  "correct",     limit: 255
+    t.string  "wrong1",      limit: 255
+    t.string  "wrong2",      limit: 255
+    t.string  "wrong3",      limit: 255
+    t.integer "author_id",   limit: 4
+    t.string  "author_name", limit: 255
+  end
+
+  create_table "question_cs1s", id: false, force: :cascade do |t|
+    t.string  "question",    limit: 255
+    t.string  "correct",     limit: 255
+    t.string  "wrong1",      limit: 255
+    t.string  "wrong2",      limit: 255
+    t.string  "wrong3",      limit: 255
+    t.integer "author_id",   limit: 4
+    t.string  "author_name", limit: 255
+  end
+
+  create_table "question_ohenros", id: false, force: :cascade do |t|
+    t.string  "question",    limit: 255
+    t.string  "correct",     limit: 255
+    t.string  "wrong1",      limit: 255
+    t.string  "wrong2",      limit: 255
+    t.string  "wrong3",      limit: 255
+    t.integer "author_id",   limit: 4
+    t.string  "author_name", limit: 255
+  end
+
   create_table "test1_alkalis", force: :cascade do |t|
     t.string   "ent",        limit: 255
     t.string   "att",        limit: 255
@@ -43,6 +98,25 @@ ActiveRecord::Schema.define(version: 20160421204414) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.integer  "state",      limit: 4,   default: 0
+  end
+
+  create_table "test1_cs1s", id: false, force: :cascade do |t|
+    t.string  "ent",   limit: 255
+    t.string  "att",   limit: 255
+    t.string  "val",   limit: 255
+    t.integer "state", limit: 4,   default: 0
+  end
+
+  create_table "test1_ohenros", id: false, force: :cascade do |t|
+    t.string  "ent",   limit: 255
+    t.string  "att",   limit: 255
+    t.string  "val",   limit: 255
+    t.integer "state", limit: 4,   default: 0
+  end
+
+  create_table "test1_periodic_tables", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "test2_alkalis", force: :cascade do |t|
@@ -76,7 +150,7 @@ ActiveRecord::Schema.define(version: 20160421204414) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.string   "username",               limit: 255
-    t.integer  "role",                   limit: 4
+    t.integer  "role",                   limit: 4,   default: 0
   end
 
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
