@@ -11,10 +11,12 @@ class HomeController < ApplicationController
   end
 
   def gaze
-    @output = false
+    data = KeywordPeriodictable.all
     if params['output'] then
-      @output = true
-      #p params[:id]
+      data.each do |datum|
+        puts "#{datum.keyword} #{datum.start} #{datum.end} #{datum.watch}"
+      end
+      p params['gaze'].values.join.split(",").map(&:to_i)
     end
   end
 

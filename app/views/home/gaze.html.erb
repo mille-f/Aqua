@@ -14,7 +14,8 @@
         <i class="fa fa-clock-o" aria-hidden="true"></i>
       </button>
       <br /><br />
-      <%= form_for("gaze", :method => :post, :remote => true, :id => "output") do %>
+      <%= form_for("gaze", :method => :post, :remote => true, html: {:id => "send"}) do |f| %>
+        <%= f.hidden_field :gaze, :value => "" %>
         <%= button_tag(type: "submit", class: "btn btn-primary", name: "output", id: "output") do %> Output <% end %>
       <% end %>
       <!--
@@ -138,6 +139,7 @@ window.addEventListener("load", () => {
         if (ytPlayer.getPlayerState() == 1) {
           cnt[parseInt(ytPlayer.getCurrentTime())] += 1;
           document.getElementById('time').innerHTML = cnt;
+          document.getElementById('gaze_gaze').value = cnt;
         }
       } else {
         document.getElementById('positions').innerHTML = "false";
@@ -146,4 +148,5 @@ window.addEventListener("load", () => {
     position();
   });
 });
+
 </script>
