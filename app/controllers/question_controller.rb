@@ -150,9 +150,38 @@ class QuestionController < ApplicationController
     word = Array.new
     if params['ajx'].present?
       $txt = params['ajx']['problem']
+
+      # 作問できない場合
       if $txt.include?("作問できません")
         @transition = true
+
+        kw = KeywordPeriodictable.all
+        model = Test1Periodictable.all
+
+        kw_arr = []
+        kw_cnt = Hash.new(0)
+
+        kw.order(:keyword).each do |w|
+          if w.watch # watchがtrueならば
+            model.each do |i|
+              if i.state == 0
+                k = w.keyword
+                if (i.ent == k) || (i.att == k) || (i.val == k)
+                  kw_arr << k
+                end
+              end
+            end
+          end
+        end
+
+        kw_arr.each do |e|
+          kw_cnt[e] += 1
+        end
+        @target = kw_cnt.sort_by {|_,v| -v}[0][0]
+
       end
+
+      # XのYは何ですか？
       nm.parse($txt) do |w|
         word.push(w.surface)
         if w.surface == 'の' then
