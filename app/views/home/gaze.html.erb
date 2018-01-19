@@ -136,7 +136,8 @@ window.addEventListener("load", () => {
         }
         //console.log(positionString);
         document.getElementById('positions').innerHTML = positionString;
-        if (ytPlayer.getPlayerState() == 1) {
+        let playerstate = ytPlayer.getPlayerState();
+        if (playerstate == 1 || playerstate == 2) {
           cnt[parseInt(ytPlayer.getCurrentTime())] += 1;
           document.getElementById('time').innerHTML = cnt;
           document.getElementById('gaze_gaze').value = cnt;
