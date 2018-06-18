@@ -51,15 +51,23 @@
         <canvas id="result" width="400" height="300"></canvas>
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-3">
       <div id="pos">
         <p id="positions">positions<br/></p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div id="emo">
+        <p id="emotes" style ="font-size: 24pt">emotes<br/></p>
       </div>
     </div>
   </div>
 </div>
 
 <script src="assets/clmtrackr.js"></script>
+<script src="assets/model_pca_20_svm_emotion.js"></script>
+<script src="assets/emotionClassifier.js"></script>
+<script src="assets/emotionModel.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script type="text/javascript">
 
@@ -109,8 +117,11 @@ window.addEventListener("load", () => {
 
     let ctracker = new clm.tracker();
     target.src = window.URL.createObjectURL(s);
-    ctracker.init();
+    ctracker.init(pModel);
     ctracker.start(target);
+
+    let classifier = new emotionClassifier();
+    classifier.init(emotionModel);
 
     let duration = parseInt(ytPlayer.getDuration());
     let cnt = Array.apply(null, Array(duration)).map(function() {return 0});
@@ -127,6 +138,9 @@ window.addEventListener("load", () => {
     let position = () => {
       requestAnimationFrame(position);
       var positions = ctracker.getCurrentPosition();
+      let emo_params = ctracker.getCurrentParameters();
+      let emotion = classifier.meanPredict(emo_params);
+      showEmotionData(emotion);
       // positions = [[x_0, y_0], [x_1,y_1], ... ]
       // do something with the positions ...
       let positionString = "";
@@ -137,7 +151,7 @@ window.addEventListener("load", () => {
         //console.log(positionString);
         document.getElementById('positions').innerHTML = positionString;
         let playerstate = ytPlayer.getPlayerState();
-        if (playerstate == 1 || playerstate == 2) {
+        if (playerstate == 1 || playerstate == 2) { // 再生中 or 一時停止中
           cnt[parseInt(ytPlayer.getCurrentTime())] += 1;
           document.getElementById('time').innerHTML = cnt;
           document.getElementById('gaze_gaze').value = cnt;
@@ -147,6 +161,14 @@ window.addEventListener("load", () => {
       }
     };
     position();
+
+    function showEmotionData(emo) {
+      let emotionString = "";
+      for (var i = 0; i < emo.length; i++) {
+        emotionString += emo[i].emotion + ": " + emo[i].value.toFixed(1) + "<br />";
+      }
+      document.getElementById("emotes").innerHTML = emotionString;
+    };
   });
 });
 
