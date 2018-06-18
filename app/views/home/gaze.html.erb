@@ -135,14 +135,18 @@ window.addEventListener("load", () => {
     };
     update();
 
-    let position = () => {
-      requestAnimationFrame(position);
+    let drawLoop = () => {
+      requestAnimationFrame(drawLoop);
       var positions = ctracker.getCurrentPosition();
       let emo_params = ctracker.getCurrentParameters();
       let emotion = classifier.meanPredict(emo_params);
+
+      showPosition(positions);
       showEmotionData(emotion);
-      // positions = [[x_0, y_0], [x_1,y_1], ... ]
-      // do something with the positions ...
+    };
+    drawLoop();
+
+    function showPosition(positions) {
       let positionString = "";
       if (positions) {
         for (var p = 0; p < 10; p++) {
@@ -160,7 +164,6 @@ window.addEventListener("load", () => {
         document.getElementById('positions').innerHTML = "false";
       }
     };
-    position();
 
     function showEmotionData(emo) {
       let emotionString = "";
