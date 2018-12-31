@@ -116,7 +116,8 @@ window.addEventListener("load", () => {
     let target = document.getElementById("target");
 
     let ctracker = new clm.tracker();
-    target.src = window.URL.createObjectURL(s);
+    //target.src = window.URL.createObjectURL(s); // 廃止されたため下のコードに書き換え
+    target.srcObject = s;
     ctracker.init(pModel);
     ctracker.start(target);
 
