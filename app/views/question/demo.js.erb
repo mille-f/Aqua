@@ -90,7 +90,7 @@ if (<%= @problem %>) {  // 問題文のボタンが押されたら
 
 // 作問できませんが入力された場合
 if (<%= @transition%>) {
-  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">では、“<%= @target %>”について作問してみましょう。作問できますか？</font></div>');
+  $("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">では、“<%= @target %>” について作問してみましょう。作問できますか？</font></div>');
   $("#dialogue").append('<div class="fix"><div class="well"><%= form_for("demo", :method => :post, :remote => true, :id => "is_sakumon") do %><%= image_tag "person.png", :size => "40x40", :align => "middle" %> &nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-primary", name: "sakumon_yes", id: "sakumon_yes") do %> Yes <% end %>&nbsp;&nbsp;<%= button_tag(type: "submit", class: "btn btn-default", name: "sakumon_no", id: "sakumon_no") do %> No <% end %><% end %></div></div>');
   //$("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">では、“K”に関する問題を解いてみましょう。</font></div>');
   //$("#dialogue").append('<div class="well"><%= image_tag "pc.png", :size => "40x32", :align => "middle" %> &nbsp;&nbsp;<font size="3">次の問題に答えなさい。<br>&emsp;&emsp;&emsp;&nbsp;「Kの炎色反応は何色ですか？」</font></div>');
